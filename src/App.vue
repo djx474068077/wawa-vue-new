@@ -1,13 +1,20 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!--<img src="./assets/logo.png">-->
+    <Header></Header>
     <router-view/>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
+import Header from 'components/Header/Header'
+import Footer from 'components/Footer/Footer'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Header, Footer
+  }
 }
 </script>
 
