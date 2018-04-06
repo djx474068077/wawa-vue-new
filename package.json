@@ -1,11 +1,11 @@
 {
-  "name": "y",
+  "name": "WaWaPK",
   "version": "1.0.0",
   "description": "a vue of wawa",
   "author": "djx474068077 <474068077@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
@@ -14,8 +14,18 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "china-division": "^2.0.0",
+    "less": "^3.0.1",
+    "less-loader": "^4.1.0",
+    "qs": "^6.5.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-axios": "^2.1.1",
+    "vue-router": "^3.0.1",
+    "vux": "^2.8.1",
+    "vux-loader": "^1.2.6"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

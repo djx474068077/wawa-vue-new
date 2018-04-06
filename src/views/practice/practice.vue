@@ -1,10 +1,10 @@
 <template>
-  <div id="header"></div>
+  <div>practice</div>
 </template>
 
 <script>
 export default {
-  name: 'vue-header'
+  name: 'practice'
 }
 </script>
 
