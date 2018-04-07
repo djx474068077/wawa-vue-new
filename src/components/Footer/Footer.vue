@@ -36,7 +36,7 @@ export default {
   methods: {
     linkTo (link) {
       this.menuStatus = link
-      this.$router.push('/main/' + link)
+      this.$router.push('/' + link)
     }
   }
 }
