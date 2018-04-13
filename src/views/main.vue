@@ -13,6 +13,9 @@ export default {
   name: 'vue-main',
   components: {
     VueHeader, VueFooter
+  },
+  mounted () {
+    this.$router.push('/fight')
   }
 }
 </script>

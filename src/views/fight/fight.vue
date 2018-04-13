@@ -3,6 +3,7 @@
     <p>fight</p>
     <!--<i class="fa fa-handshake-o" style="font-size: 30px;color: red;"></i>-->
     <div class="ability" id="ability-box" ref="myEchart"></div>
+
   </div>
 </template>
 
@@ -20,13 +21,16 @@ export default {
         radar: [
           {
             indicator: [
-              {text: '外观', max: 100},
-              {text: '拍照', max: 100},
-              {text: '系统', max: 100},
-              {text: '性能', max: 100},
-              {text: '屏幕', max: 100},
-              {text: '屏幕', max: 100}
+              {text: '速度', max: 100},
+              {text: '判断力', max: 100},
+              {text: '计算力', max: 100},
+              {text: '精确度', max: 100},
+              {text: '观察力', max: 100},
+              {text: '记忆力', max: 100}
             ],
+            itemStyle: {
+              color: '#ff0000'
+            },
             radius: 100,
             center: ['50%', '40%']
           }
