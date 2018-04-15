@@ -54,12 +54,20 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.initChart()
+      this.init()
     })
   },
   methods: {
     initChart () {
       let chart = echarts.init(document.getElementById('ability-box'))
       chart.setOption(this.abilityOption)
+    },
+    init () {
+      this.$http.get('/api/users').then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }
