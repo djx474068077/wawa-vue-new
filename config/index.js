@@ -11,11 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api/users': {
-        target: 'http://172.18.32.65:3000/users',
+      '/api': {
+        target: 'http://wawaapi.dongff.xyz',
         changeOrigin: true,
         pathRewrite: {
-          '^/api/users': '/users',
+          '^/api': '',
         },
         cookieDomainRewrite: {
           '*': ''
@@ -62,7 +62,6 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-
     /**
      * Source Maps
      */
