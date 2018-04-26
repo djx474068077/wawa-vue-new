@@ -11,7 +11,7 @@ export default {
     return {
       gameList: [
         {
-          name: 'game1',
+          name: '颜色陷阱',
           link: ''
         }
       ]

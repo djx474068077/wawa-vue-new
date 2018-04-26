@@ -63,7 +63,7 @@ export default {
       chart.setOption(this.abilityOption)
     },
     init () {
-      this.$http.get('/api/users').then(res => {
+      this.$http.get('/users').then(res => {
         console.log(res)
       }).catch(err => {
         console.log(err)

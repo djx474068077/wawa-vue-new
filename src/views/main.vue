@@ -15,11 +15,11 @@ export default {
     VueHeader, VueFooter
   },
   mounted () {
-    this.$http.get('/api/oauth/wx_login').then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
-    })
+    // this.$http.get('/oauth/wx_login').then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
     this.$router.push('/fight')
   }
 }
