@@ -6,12 +6,15 @@ import router from './router'
 import Axios from 'axios'
 import VueAxios from 'vue-axios'
 import apiConfig from '../config/api.config'
+import iView from 'iview'
+import 'iview/dist/styles/iview.css'
 import {LoadingPlugin, ToastPlugin, WechatPlugin} from 'vux'
 import './assets/font-awesome-4.7.0/css/font-awesome.min.css'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, Axios)
 Axios.defaults.baseURL = apiConfig.baseUrl
+Vue.use(iView)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(WechatPlugin)

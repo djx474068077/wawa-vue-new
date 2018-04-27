@@ -17,6 +17,7 @@
     "axios": "^0.18.0",
     "china-division": "^2.0.0",
     "echarts": "^4.0.4",
+    "iview": "^2.13.1",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",
     "qs": "^6.5.1",
