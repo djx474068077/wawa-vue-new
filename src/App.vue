@@ -22,6 +22,6 @@ export default {
   margin: 0px;
   height: 100%;
   padding: 0px;
-  background-color: #FFFAFA;
+  background-color: rgb(234, 234, 234);
 }
 </style>

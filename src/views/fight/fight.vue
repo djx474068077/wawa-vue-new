@@ -54,7 +54,7 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.initChart()
-      this.init()
+      // this.init()
     })
   },
   methods: {
