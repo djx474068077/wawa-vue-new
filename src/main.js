@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import Axios from 'axios'
 import VueAxios from 'vue-axios'
+import store from './store'
 import apiConfig from '../config/api.config'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
@@ -23,6 +24,7 @@ Vue.use(WechatPlugin)
 new Vue({
   el: '#app',
   router,
+  store: store,
   components: { App },
   template: '<App/>'
 })

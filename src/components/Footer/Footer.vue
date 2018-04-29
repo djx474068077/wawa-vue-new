@@ -1,7 +1,7 @@
 <template>
   <div id="footer">
     <tabbar>
-      <tabbar-item show-dot @click.native="linkTo ('practice')">
+      <tabbar-item @click.native="linkTo ('practice')">
         <img v-if="menuStatus === 'practice'" style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/practice-on.png">
         <img v-else style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/practice-off.png">
         <span slot="label">训练</span>
@@ -11,7 +11,12 @@
         <img v-else style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/fight-off.png">
         <span slot="label">对战</span>
       </tabbar-item>
-      <tabbar-item badge="2" @click.native="linkTo ('user')">
+      <tabbar-item v-if="fullUserinfo" @click.native="linkTo ('user')">
+        <img v-if="menuStatus === 'user'" style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/user-on.png">
+        <img v-else style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/user-off.png">
+        <span slot="label">我的</span>
+      </tabbar-item>
+      <tabbar-item v-else show-dot @click.native="linkTo ('user')">
         <img v-if="menuStatus === 'user'" style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/user-on.png">
         <img v-else style="width: 24px;height: 24px;" slot="icon" src="../../assets/menu/user-off.png">
         <span slot="label">我的</span>
@@ -26,12 +31,22 @@ export default {
   name: 'vue-footer',
   data () {
     return {
-      menuStatus: 'fight'
+      menuStatus: 'fight',
+      fullUserinfo: false
     }
   },
   components: {
     Tabbar,
     TabbarItem
+  },
+  mounted () {
+    let userinfo = this.$store.state.user.userinfo
+    console.log(userinfo)
+    if (userinfo.username && userinfo.avatar && userinfo.sex && userinfo.age && userinfo.nickname && userinfo.city) {
+      this.fullUserinfo = true
+    } else {
+      this.fullUserinfo = false
+    }
   },
   methods: {
     linkTo (link) {

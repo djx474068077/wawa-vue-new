@@ -3,7 +3,7 @@
     <div class="register-box">
       <h1 class="register-title">wawa</h1>
       <div>
-        <input type="text" v-model="params.userName" placeholder=" 用户名必须由6-16位字母和数字组成 ">
+        <input type="text" v-model="params.username" placeholder=" 用户名必须由6-16位字母和数字组成 ">
       </div>
       <div>
         <input type="password" v-model="params.password" placeholder=" 密码 ">
@@ -31,7 +31,7 @@ export default {
     return {
       is_agree: false,
       params: {
-        userName: '',
+        username: '',
         password: ''
       },
       repassword: ''
@@ -40,29 +40,46 @@ export default {
   methods: {
     registe () {
       let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
-      if (this.params.userName === '' || this.params.password === '' || this.repassword === '') {
+      if (this.params.username === '' || this.params.password === '' || this.repassword === '') {
         console.log('输入的内容不能为空')
-      } else if (!reg.test(this.params.userName)) {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '输入的内容不能为空'
+        })
+      } else if (!reg.test(this.params.username)) {
         // 用户名格式不正确
         console.log('用户名格式不正确')
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '用户名格式不正确'
+        })
       } else if (this.params.password !== this.repassword) {
         // 两次输入的密码不一致
         console.log('两次输入的密码不一致')
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '两次输入的密码不一致'
+        })
       } else {
         // 发送请求
         this.$http.post('/users/register', qs.stringify(this.params)).then(response => {
           let res = response.data
           if (res.status === 10000) {
-            console.log('注册成功')
             this.$vux.toast.show({
               width: '60%',
               time: 1000,
               type: 'success',
-              text: '注册成功',
-              position: 'bottom'
+              text: res.msg
             })
             let _this = this
             setTimeout(function () {
+              console.log(_this)
               _this.$router.push('/login')
             }, 1000)
           } else {

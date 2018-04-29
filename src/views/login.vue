@@ -3,15 +3,15 @@
     <div class="login-box">
       <h1 class="login-title">wawa</h1>
       <div>
-        <input type="text" placeholder=" 用户名/ID ">
+        <input type="text" v-model="params.username" placeholder=" 用户名 ">
       </div>
       <div>
-        <input type="password" placeholder=" 密码 ">
+        <input type="password" v-model="params.password" placeholder=" 密码 ">
       </div>
       <p style="text-align: left">
         <Checkbox style="font-size: 13px" v-model="is_agree">我已阅读并同意<a href="#">服务条款</a></Checkbox>
       </p>
-      <button v-if="is_agree" class="can-login">登 陆</button>
+      <button v-if="is_agree" class="can-login" @click="login">登 陆</button>
       <button v-else disabled class="no-login">登 陆</button>
       <p>
         <a href="javascript:;" @click="$router.push('/register')">新用户注册</a>
@@ -21,13 +21,65 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   name: 'login',
   data () {
     return {
       is_agree: false,
       params: {
-
+        username: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    login () {
+      let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
+      if (this.params.username === '' || this.params.password === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '输入的内容不能为空'
+        })
+        console.log('输入的内容不能为空')
+      } else if (!reg.test(this.params.username)) {
+        // 用户名格式不正确
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '用户名格式不正确'
+        })
+        console.log('用户名格式不正确')
+      } else {
+        // 发送请求
+        this.$http.post('/users/login', qs.stringify(this.params)).then(response => {
+          let res = response.data
+          if (res.status === 10000) {
+            this.$vux.toast.show({
+              width: '60%',
+              time: 1000,
+              type: 'success',
+              text: res.msg
+            })
+            this.$store.commit('login', res.data)
+            let _this = this
+            setTimeout(function () {
+              _this.$router.push('/')
+            }, 1000)
+          } else {
+            this.$vux.toast.show({
+              width: '60%',
+              time: 1000,
+              type: 'warn',
+              text: res.msg
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
       }
     }
   }

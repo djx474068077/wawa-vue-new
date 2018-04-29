@@ -14,12 +14,15 @@ export default {
   components: {
     VueHeader, VueFooter
   },
+  created () {
+    this.$store.commit('refreshUser')
+  },
   mounted () {
-    this.$http.get('/oauth/wx_login').then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
-    })
+    // this.$http.get('/oauth/wx_login').then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
     this.$router.push('/fight')
   }
 }
