@@ -9,6 +9,7 @@ const user = {
       }
     },
     refreshUser (state) {
+      console.log('refreshUser')
       if (localStorage.userinfo) {
         state.userinfo = JSON.parse(localStorage.userinfo)
       }

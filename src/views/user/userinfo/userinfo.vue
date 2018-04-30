@@ -5,26 +5,24 @@
       <ul>
         <li>
           <a href="javascript:;">
-            <!--<i class="fa fa-history" style=""></i>-->
             <div>
               头像
             </div>
-            <img src="../../../assets/logo.png" alt="">
+            <img v-if="params.avatar" :src="params.avatar" alt="">
+            <img v-else src="../../../assets/avatar.jpg" alt="">
           </a>
         </li>
         <li>
           <a href="javascript:;">
-            <!--<i class="fa fa-bookmark" style=""></i>-->
             <div>
-              昵称<p class="userinfo-value">董肥肥</p>
+              昵称<p class="userinfo-value">{{ params.nickname }}</p>
             </div>
           </a>
         </li>
         <li>
           <a href="javascript:;">
-            <!--<i class="fa fa-bar-chart" style=""></i>-->
             <div>
-              蛙蛙号<p class="userinfo-value">dadao1</p>
+              蛙蛙号<p class="userinfo-value">{{ userinfo.username }}</p>
             </div>
           </a>
         </li>
@@ -34,34 +32,35 @@
       <div></div>
       <ul>
         <li>
-          <a href="javascript:;">
-            <!--<i class="fa fa-bar-chart" style=""></i>-->
+          <a href="javascript:;" @click="setBirthday">
             <div>
-              出生日期<p class="userinfo-value">1995-12-12</p>
+              出生日期
+              <p class="userinfo-value" v-if="params.birthday">{{ params.birthday }}</p>
             </div>
           </a>
         </li>
         <li>
           <a href="javascript:;">
-            <!--<i class="fa fa-bar-chart" style=""></i>-->
             <div>
-              性别<p class="userinfo-value">男</p>
+              性别<p class="userinfo-value">{{ params.sex }}</p>
             </div>
           </a>
         </li>
         <li>
-          <a href="javascript:;">
-            <!--<i class="fa fa-bar-chart" style=""></i>-->
+          <a href="javascript:;" @click="setAddress">
             <div>
-              地区<p class="userinfo-value">安徽 合肥</p>
+              地区<p class="userinfo-value">{{ params.country }} {{ params.province }} {{ params.city }}</p>
             </div>
           </a>
+          <!--<group>-->
+            <!--<x-address title="地区" v-model="address" :list="addressData" placeholder="请选择地址"></x-address>-->
+            <!--<cell title="上面value值" :value="value"></cell>-->
+          <!--</group>-->
         </li>
         <li>
           <a href="javascript:;">
-            <!--<i class="fa fa-bar-chart" style=""></i>-->
             <div>
-              个性签名<p class="userinfo-value">我最牛逼</p>
+              个性签名<p class="userinfo-value">{{ params.describe }}</p>
             </div>
           </a>
         </li>
@@ -71,8 +70,82 @@
 </template>
 
 <script>
+import moment from 'moment'
+import { XAddress, ChinaAddressV4Data, Group, Value2nameFilter as value2name } from 'vux'
 export default {
-  name: 'userinfo'
+  name: 'userinfo',
+  components: {
+    XAddress, ChinaAddressV4Data, Group
+  },
+  data () {
+    return {
+      address: '',
+      addressData: ChinaAddressV4Data,
+      params: {
+        avatar: '',
+        nickname: '',
+        birthday: '',
+        sex: '',
+        city: '',
+        province: '',
+        country: '',
+        describe: ''
+      }
+    }
+  },
+  computed: {
+    userinfo: function () {
+      return this.$store.state.user.userinfo
+    }
+  },
+  watch: {
+    userinfo: (n, o) => {
+      this.params.avatar = this.userinfo.avatar
+      this.params.nickname = this.userinfo.nickname
+      this.params.birthday = this.userinfo.birthday ? moment(this.userinfo.birthday).format('YYYY-DD-MM') : ''
+      this.params.sex = this.userinfo.sex
+      this.params.city = this.userinfo.city
+      this.params.province = this.userinfo.province
+      this.params.country = this.userinfo.country
+      this.params.describe = this.userinfo.describe
+    }
+  },
+  mounted () {
+    this.params.avatar = this.userinfo.avatar
+    this.params.nickname = this.userinfo.nickname
+    this.params.birthday = this.userinfo.birthday ? moment(this.userinfo.birthday).format('YYYY-DD-MM') : ''
+    this.params.sex = this.userinfo.sex
+    this.params.city = this.userinfo.city
+    this.params.province = this.userinfo.province
+    this.params.country = this.userinfo.country
+    this.params.describe = this.userinfo.describe
+  },
+  methods: {
+    setBirthday () {
+      let _this = this
+      this.$vux.datetime.show({
+        cancelText: '取消',
+        confirmText: '确定',
+        format: 'YYYY-MM-DD',
+        value: _this.params.birthday,
+        onConfirm (val) {
+          console.log(val)
+          _this.params.birthday = val
+        }
+      })
+    },
+    getName (value) {
+      return value2name(value, ChinaAddressV4Data)
+    },
+    setAddress () {
+      console.log(this.$vux)
+      this.$vux.XAddress.show({
+        title: '地区',
+        list: this.addressData,
+        value: this.address
+      })
+    }
+  }
 }
 </script>
 
