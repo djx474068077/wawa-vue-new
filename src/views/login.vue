@@ -67,7 +67,7 @@ export default {
             this.$store.commit('login', res.data)
             let _this = this
             setTimeout(function () {
-              _this.$router.push('/')
+              _this.$router.push('/user')
             }, 1000)
           } else {
             this.$vux.toast.show({

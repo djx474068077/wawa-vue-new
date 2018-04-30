@@ -1,6 +1,6 @@
 const user = {
   state: {
-    userinfo: {}
+    userinfo: ''
   },
   mutations: {
     changeUserStatus (state, status) {
@@ -9,7 +9,9 @@ const user = {
       }
     },
     refreshUser (state) {
-      state.userinfo = JSON.parse(localStorage.userinfo)
+      if (localStorage.userinfo) {
+        state.userinfo = JSON.parse(localStorage.userinfo)
+      }
       // vm.$http.get('/api/admin/admin/self').then(
       //   res => {
       //     if (res.data.status === 10000) {
@@ -31,10 +33,16 @@ const user = {
       // this.refreshUser(state, this)
     },
     logout (state, vm) {
-      state.userinfo = {}
+      console.log('logout')
+      state.userinfo = ''
       localStorage.removeItem('userinfo')
-      localStorage.clear()
       vm.$router.push('/user')
+      vm.$vux.toast.show({
+        width: '60%',
+        time: 1000,
+        type: 'success',
+        text: '退出成功'
+      })
     }
   }
 }

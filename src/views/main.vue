@@ -23,7 +23,9 @@ export default {
     // }).catch(err => {
     //   console.log(err)
     // })
-    this.$router.push('/fight')
+    if (this.$route.path === '/') {
+      this.$router.push('/fight')
+    }
   }
 }
 </script>

@@ -8,7 +8,7 @@
       /*border-bottom: 1px solid #c8c7cc*/
       li
         position: relative
-        padding: 11px 15px
+        padding: 13px 15px
         &::after
           content ''
           position: absolute
@@ -24,7 +24,7 @@
           position: relative
           display: flex
           align-items center
-          margin: -11px -15px
+          margin: -13px -15px
           padding: inherit
           color: inherit
           overflow: hidden
@@ -43,9 +43,18 @@
             line-height 56px
             /*border-radius 50%*/
             float: left
+          .badge
+            position: absolute
+            right: 20px
+            top: 50%
+            transform translateY(-50%)
+            border-radius 50%
+            background-color: #ff0000
+            height: 8px
+            width: 8px
           div
             line-height 21px
-            font-size: 17px
+            font-size: 15px
             p
               font-size: 14px
               color: #8f8f94
@@ -60,11 +69,13 @@
       <div></div>
       <ul>
         <li>
-          <a href="">
+          <a href="javascript:;">
             <img src="../../assets/logo.png" alt="">
             <div>
-              用户名
-              <p>蛙蛙号：dadao9dsaddasdasda</p>
+              <div v-if="userinfo && userinfo.nickname" style="font-size: 17px;">{{ userinfo.nickname }}</div>
+              <div v-else-if="!userinfo" style="font-size: 17px;">未登陆</div>
+              <div v-else style="font-size: 17px;">游客{{ userinfo.username }}</div>
+              <p>蛙蛙号：<span v-if="userinfo && userinfo.username">{{ userinfo.username }}</span></p>
             </div>
           </a>
         </li>
@@ -74,7 +85,21 @@
       <div></div>
       <ul>
         <li>
-          <a href="">
+          <a href="javascript:;" @click="toUserinfo">
+            <i class="fa fa-history" style=""></i>
+            <div>
+              修改用户信息
+            </div>
+            <span class="badge" v-if="showUserinfoDot"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="user-box">
+      <div></div>
+      <ul>
+        <li>
+          <a href="javascript:;" @click="toHistory">
             <i class="fa fa-history" style=""></i>
             <div>
               我的历史战绩
@@ -82,7 +107,7 @@
           </a>
         </li>
         <li>
-          <a href="">
+          <a href="javascript:;" @click="toAbility">
             <i class="fa fa-bookmark" style=""></i>
             <div>
               我的能力
@@ -90,7 +115,7 @@
           </a>
         </li>
         <li>
-          <a href="">
+          <a href="javascript:;" @click="toRanking">
             <i class="fa fa-bar-chart" style=""></i>
             <div>
               我的排名
@@ -103,7 +128,7 @@
       <div></div>
       <ul>
         <li>
-          <a href="">
+          <a href="javascript:;" @click="logout">
             <i class="fa fa-sign-out" style=""></i>
             <div>
               退出登陆
@@ -124,15 +149,123 @@ export default {
   },
   data () {
     return {
-      is: true,
-      userinfo: {}
+      is: true
+      // userinfo: {}
+    }
+  },
+  computed: {
+    userinfo: function () {
+      return this.$store.state.user.userinfo
+    },
+    showUserinfoDot: function () {
+      if (!this.userinfo) {
+        return false
+      } else if (this.userinfo.username && this.userinfo.avatar && this.userinfo.sex && this.userinfo.age && this.userinfo.nickname && this.userinfo.city) {
+        return false
+      } else {
+        return true
+      }
     }
   },
   mounted () {
-    this.userinfo = JSON.parse(localStorage.getItem('userinfo'))
-    console.log(this.userinfo)
+    // this.userinfo = JSON.parse(localStorage.getItem('userinfo'))
   },
   methods: {
+    toUserinfo () {
+      if (this.userinfo === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      } else {
+        this.$router.push('/user/userinfo')
+      }
+    },
+    toHistory () {
+      if (this.userinfo === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '功能待开发'
+        })
+      }
+    },
+    toAbility () {
+      if (this.userinfo === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '功能待开发'
+        })
+      }
+    },
+    toRanking () {
+      if (this.userinfo === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '功能待开发'
+        })
+      }
+    },
+    logout () {
+      if (this.userinfo === '') {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      } else {
+        this.$store.commit('logout', this)
+      }
+    }
   }
 }
 </script>
