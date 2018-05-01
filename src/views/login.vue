@@ -79,6 +79,12 @@ export default {
           }
         }).catch(err => {
           console.log(err)
+          this.$vux.toast.show({
+            width: '60%',
+            time: 1000,
+            type: 'warn',
+            text: '通讯错误，请重试'
+          })
         })
       }
     }

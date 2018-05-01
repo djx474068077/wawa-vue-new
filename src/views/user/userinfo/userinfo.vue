@@ -9,8 +9,13 @@
             <div>
               头像
             </div>
-            <img v-if="params.avatar" :src="params.avatar" alt="">
-            <img v-else src="../../../assets/avatar.jpg" alt="">
+            <!--<img :src="params.avatar" alt="">-->
+            <img v-if="params.avatar" class="previewer-demo-img" :src="params.avatar" @click="$refs.previewer.show(index)">
+            <img v-else src="../../../assets/avatar/avatar.jpg" alt="">
+            <!--<div v-transfer-dom>-->
+              <!--<previewer :list="avatarList" ref="previewer" :options="options"></previewer>-->
+            <!--</div>-->
+            <!--<div class="wa-avatar-large"></div>-->
           </a>
         </li>
         <li>
@@ -23,7 +28,7 @@
         <li>
           <a href="javascript:;">
             <div>
-              蛙蛙号<p class="userinfo-value">{{ userinfo.username }}</p>
+              蛙蛙号<p class="userinfo-value">{{ params.username }}</p>
             </div>
           </a>
         </li>
@@ -47,13 +52,9 @@
             </div>
           </a>
         </li>
-        <mt-popup v-model="sexPopup" position="bottom">
+        <mt-popup v-model="sexPopup" position="bottom" style="width: 100%;">
           <mt-picker :slots="sexData" @change="setSex"
           :visible-item-count="5" :show-toolbar="false" valueKey="label"></mt-picker>
-          <!--<ul>-->
-            <!--<li><a href="">男</a></li>-->
-            <!--<li><a href="">女</a></li>-->
-          <!--</ul>-->
         </mt-popup>
         <li>
           <!--<a href="javascript:;" @click="setAddress">-->
@@ -61,11 +62,7 @@
               <!--地区<p class="userinfo-value">{{ params.county }} {{ params.province }} {{ params.city }}</p>-->
             <!--</div>-->
           <!--</a>-->
-          <!--<group>-->
-            <x-address title="地区" raw-value v-model="address" :list="addressData" placeholder="请选择地址" @on-shadow-change="onShadowChange" style="font-size: 15px;"></x-address>
-            <!--<x-address v-model="value" :list="addressData" @on-shadow-change="onShadowChange" placeholder="请选择地址" :show.sync="showAddress"></x-address>-->
-            <!--<cell title="上面value值" :value="value"></cell>-->
-          <!--</group>-->
+          <x-address title="地区" raw-value v-model="address" :list="addressData" placeholder="请选择地址" @on-shadow-change="onShadowChange" style="font-size: 15px;"></x-address>
         </li>
         <li>
           <a href="javascript:;" @click="setText('个性签名', params.describe)">
@@ -77,21 +74,20 @@
       </ul>
     </div>
     <div class="wa-userinfo-btns">
-      <x-button type="primary">保存</x-button>
+      <x-button type="primary" @click.native="selfSubmit">保存</x-button>
       <x-button @click.native="$router.back()">不保存修改</x-button>
     </div>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
 import moment from 'moment'
 import { MessageBox } from 'mint-ui'
 import { Group, XAddress, ChinaAddressV4Data, XButton, Cell, Value2nameFilter as value2name } from 'vux'
 export default {
   name: 'userinfo',
   components: {
-    // Popup,
-    // Picker,
     MessageBox,
     Group,
     XAddress,
@@ -112,6 +108,7 @@ export default {
       nowAddressName: [], // 现在选择的地区的中文
       addressData: ChinaAddressV4Data, // 中国所有地区表
       params: {
+        username: '',
         avatar: '',
         nickname: '',
         birthday: '',
@@ -121,6 +118,22 @@ export default {
         county: '',
         describe: ''
       }
+      // 头像点击放大的配置
+      // options: {
+      //   getThumbBoundsFn (index) {
+      //     // find thumbnail element
+      //     let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
+      //     // get window scroll Y
+      //     let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+      //     // optionally get horizontal scroll
+      //     // get position of element relative to viewport
+      //     let rect = thumbnail.getBoundingClientRect()
+      //     // w = width
+      //     return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+      //     // Good guide on how to get element coordinates:
+      //     // http://javascript.info/tutorial/coordinates
+      //   }
+      // }
     }
   },
   computed: {
@@ -130,6 +143,7 @@ export default {
   },
   watch: {
     userinfo: (n, o) => {
+      this.params.username = this.userinfo.username
       this.params.avatar = this.userinfo.avatar
       this.params.nickname = this.userinfo.nickname
       this.params.birthday = this.userinfo.birthday ? moment(this.userinfo.birthday).format('YYYY-DD-MM') : ''
@@ -145,6 +159,7 @@ export default {
     }
   },
   mounted () {
+    this.params.username = this.userinfo.username
     this.params.avatar = this.userinfo.avatar
     this.params.nickname = this.userinfo.nickname
     this.params.birthday = this.userinfo.birthday ? moment(this.userinfo.birthday).format('YYYY-DD-MM') : ''
@@ -172,14 +187,6 @@ export default {
         }
       })
     },
-    // setAddress () {
-    //   console.log(this.$vux)
-    //   this.$vux.XAddress.show({
-    //     title: '地区',
-    //     list: this.addressData,
-    //     value: this.address
-    //   })
-    // },
     onShadowChange (ids, names) {
       console.log(ids, names)
       this.nowAddressName = names
@@ -188,25 +195,6 @@ export default {
       return value2name(value, ChinaAddressV4Data)
     },
     setText (type, text) {
-      // const _this = this
-      // console.log(this)
-      // this.$vux.confirm.prompt('123', {
-      //   title: 'Title',
-      //   showInput: true,
-      //   onShow () {
-      //     console.log('promt show')
-      //     _this.$vux.confirm.setInputValue('社么？')
-      //   },
-      //   onHide () {
-      //     console.log('prompt hide')
-      //   },
-      //   onCancel () {
-      //     console.log('prompt cancel')
-      //   },
-      //   onConfirm (msg) {
-      //     alert(msg)
-      //   }
-      // })
       MessageBox.prompt(type, {
         inputValue: text
       }).then(({ value, action }) => {
@@ -215,17 +203,23 @@ export default {
         } else if (type === '个性签名') {
           this.params.describe = value
         }
-        // console.log(value)
-        // console.log(action)
       })
     },
     setSex (picker, values) {
-      // console.log(picker)
-      console.log(values[0])
-      // if (values[0] > values[1]) {
-      // picker.setSlotValue(1, values[0])
-      this.params.sex = values[0]
-      // }
+      // console.log(values[0])
+      if (values[0] === '我傲娇，我不说') {
+        this.params.sex = ''
+      } else {
+        this.params.sex = values[0]
+      }
+    },
+    selfSubmit () {
+      this.$http.post('/users/changeSelf', qs.stringify(this.params)).then(response => {
+        let res = response.data
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

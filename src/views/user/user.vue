@@ -71,7 +71,7 @@
         <li>
           <a href="javascript:;" @click="toUserinfo">
             <img v-if="userinfo.avatar" :src="userinfo.avatar" alt="">
-            <img v-else src="../../assets/avatar.jpg" alt="">
+            <img v-else src="../../assets/avatar/avatar.jpg" alt="">
             <div>
               <div v-if="userinfo && userinfo.nickname" style="font-size: 17px;">{{ userinfo.nickname }}</div>
               <div v-else-if="!userinfo" style="font-size: 17px;">未登陆</div>
