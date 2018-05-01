@@ -87,7 +87,7 @@
       <ul>
         <li>
           <a href="javascript:;" @click="toUserinfo">
-            <i class="fa fa-history" style=""></i>
+            <i class="fa fa-gear" style=""></i>
             <div>
               修改用户信息
             </div>

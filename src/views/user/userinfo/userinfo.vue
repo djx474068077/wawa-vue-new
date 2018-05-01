@@ -1,5 +1,6 @@
 <template>
   <div class="wa-userinfo">
+    <!--<input type="file" accept="video/*;capture=camcorder">-->
     <div class="user-box">
       <div></div>
       <ul>
@@ -13,7 +14,7 @@
           </a>
         </li>
         <li>
-          <a href="javascript:;">
+          <a href="javascript:;" @click="setText('昵称', params.nickname)">
             <div>
               昵称<p class="userinfo-value">{{ params.nickname }}</p>
             </div>
@@ -40,25 +41,34 @@
           </a>
         </li>
         <li>
-          <a href="javascript:;">
+          <a href="javascript:;" @click="sexPopup = true">
             <div>
               性别<p class="userinfo-value">{{ params.sex }}</p>
             </div>
           </a>
         </li>
+        <mt-popup v-model="sexPopup" position="bottom">
+          <mt-picker :slots="sexData" @change="setSex"
+          :visible-item-count="5" :show-toolbar="false" valueKey="label"></mt-picker>
+          <!--<ul>-->
+            <!--<li><a href="">男</a></li>-->
+            <!--<li><a href="">女</a></li>-->
+          <!--</ul>-->
+        </mt-popup>
         <li>
-          <a href="javascript:;" @click="setAddress">
-            <div>
-              地区<p class="userinfo-value">{{ params.country }} {{ params.province }} {{ params.city }}</p>
-            </div>
-          </a>
+          <!--<a href="javascript:;" @click="setAddress">-->
+            <!--<div>-->
+              <!--地区<p class="userinfo-value">{{ params.county }} {{ params.province }} {{ params.city }}</p>-->
+            <!--</div>-->
+          <!--</a>-->
           <!--<group>-->
-            <!--<x-address title="地区" v-model="address" :list="addressData" placeholder="请选择地址"></x-address>-->
+            <x-address title="地区" raw-value v-model="address" :list="addressData" placeholder="请选择地址" @on-shadow-change="onShadowChange" style="font-size: 15px;"></x-address>
+            <!--<x-address v-model="value" :list="addressData" @on-shadow-change="onShadowChange" placeholder="请选择地址" :show.sync="showAddress"></x-address>-->
             <!--<cell title="上面value值" :value="value"></cell>-->
           <!--</group>-->
         </li>
         <li>
-          <a href="javascript:;">
+          <a href="javascript:;" @click="setText('个性签名', params.describe)">
             <div>
               个性签名<p class="userinfo-value">{{ params.describe }}</p>
             </div>
@@ -66,21 +76,41 @@
         </li>
       </ul>
     </div>
+    <div class="wa-userinfo-btns">
+      <x-button type="primary">保存</x-button>
+      <x-button @click.native="$router.back()">不保存修改</x-button>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { XAddress, ChinaAddressV4Data, Group, Value2nameFilter as value2name } from 'vux'
+import { MessageBox } from 'mint-ui'
+import { Group, XAddress, ChinaAddressV4Data, XButton, Cell, Value2nameFilter as value2name } from 'vux'
 export default {
   name: 'userinfo',
   components: {
-    XAddress, ChinaAddressV4Data, Group
+    // Popup,
+    // Picker,
+    MessageBox,
+    Group,
+    XAddress,
+    XButton,
+    Cell
   },
   data () {
     return {
-      address: '',
-      addressData: ChinaAddressV4Data,
+      sexPopup: false,
+      sexData: [
+        {
+          flex: 1,
+          values: ['我傲娇，我不说', '男', '女'],
+          className: 'sex-list'
+        }
+      ],
+      address: [], // 地区绑定值
+      nowAddressName: [], // 现在选择的地区的中文
+      addressData: ChinaAddressV4Data, // 中国所有地区表
       params: {
         avatar: '',
         nickname: '',
@@ -88,7 +118,7 @@ export default {
         sex: '',
         city: '',
         province: '',
-        country: '',
+        county: '',
         describe: ''
       }
     }
@@ -106,8 +136,12 @@ export default {
       this.params.sex = this.userinfo.sex
       this.params.city = this.userinfo.city
       this.params.province = this.userinfo.province
-      this.params.country = this.userinfo.country
+      this.params.county = this.userinfo.county
       this.params.describe = this.userinfo.describe
+      this.address = []
+      this.address.push(this.userinfo.province)
+      this.address.push(this.userinfo.city)
+      this.address.push(this.userinfo.county)
     }
   },
   mounted () {
@@ -117,8 +151,12 @@ export default {
     this.params.sex = this.userinfo.sex
     this.params.city = this.userinfo.city
     this.params.province = this.userinfo.province
-    this.params.country = this.userinfo.country
+    this.params.county = this.userinfo.county
     this.params.describe = this.userinfo.describe
+    this.address = []
+    this.address.push(this.userinfo.province)
+    this.address.push(this.userinfo.city)
+    this.address.push(this.userinfo.county)
   },
   methods: {
     setBirthday () {
@@ -134,16 +172,60 @@ export default {
         }
       })
     },
+    // setAddress () {
+    //   console.log(this.$vux)
+    //   this.$vux.XAddress.show({
+    //     title: '地区',
+    //     list: this.addressData,
+    //     value: this.address
+    //   })
+    // },
+    onShadowChange (ids, names) {
+      console.log(ids, names)
+      this.nowAddressName = names
+    },
     getName (value) {
       return value2name(value, ChinaAddressV4Data)
     },
-    setAddress () {
-      console.log(this.$vux)
-      this.$vux.XAddress.show({
-        title: '地区',
-        list: this.addressData,
-        value: this.address
+    setText (type, text) {
+      // const _this = this
+      // console.log(this)
+      // this.$vux.confirm.prompt('123', {
+      //   title: 'Title',
+      //   showInput: true,
+      //   onShow () {
+      //     console.log('promt show')
+      //     _this.$vux.confirm.setInputValue('社么？')
+      //   },
+      //   onHide () {
+      //     console.log('prompt hide')
+      //   },
+      //   onCancel () {
+      //     console.log('prompt cancel')
+      //   },
+      //   onConfirm (msg) {
+      //     alert(msg)
+      //   }
+      // })
+      MessageBox.prompt(type, {
+        inputValue: text
+      }).then(({ value, action }) => {
+        if (type === '昵称') {
+          this.params.nickname = value
+        } else if (type === '个性签名') {
+          this.params.describe = value
+        }
+        // console.log(value)
+        // console.log(action)
       })
+    },
+    setSex (picker, values) {
+      // console.log(picker)
+      console.log(values[0])
+      // if (values[0] > values[1]) {
+      // picker.setSlotValue(1, values[0])
+      this.params.sex = values[0]
+      // }
     }
   }
 }
@@ -153,7 +235,7 @@ export default {
   .wa-userinfo
     .user-box>div
       height: 15px
-    ul
+    & ul
       background #ffffff
       /*border-top: 1px solid #c8c7cc*/
       /*border-bottom: 1px solid #c8c7cc*/
@@ -193,10 +275,21 @@ export default {
             width: 100%
           .userinfo-value
             line-height 21px
-            font-size: 14px
+            font-size: 13px
             color: #8f8f94
             float: right
             overflow: hidden
             white-space normal
             text-overflow ellipsis
+          .sex-list
+            width: 100%
+        & .vux-popup-picker-select-box
+          position: absolute
+          right: 0px
+          top: 0px
+          line-height 21px
+          font-size: 13px
+          color: #8f8f94
+    .wa-userinfo-btns
+      margin-top: 40px
 </style>

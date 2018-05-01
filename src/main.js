@@ -9,20 +9,23 @@ import store from './store'
 import apiConfig from '../config/api.config'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
+import MintUi from 'mint-ui'
+import 'mint-ui/lib/style.css'
 import moment from 'moment'
-import {LoadingPlugin, ToastPlugin, WechatPlugin, DatetimePlugin, XAddress} from 'vux'
+import {LoadingPlugin, ToastPlugin, WechatPlugin, DatetimePlugin, ConfirmPlugin} from 'vux'
 import './assets/font-awesome-4.7.0/css/font-awesome.min.css'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, Axios)
 Axios.defaults.baseURL = apiConfig.baseUrl
+Vue.use(MintUi)
 Vue.use(iView)
 Vue.use(moment)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(WechatPlugin)
 Vue.use(DatetimePlugin)
-Vue.use(XAddress)
+Vue.use(ConfirmPlugin)
 
 /* eslint-disable no-new */
 new Vue({

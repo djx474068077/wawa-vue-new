@@ -38,7 +38,7 @@ export default {
       return this.$store.state.user.userinfo
     },
     nowPath: function () {
-      console.log(this.$route.path)
+      // console.log(this.$route.path)
       return this.$route.path
     },
     showDot: function () {
