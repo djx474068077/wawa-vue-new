@@ -22,7 +22,7 @@ export default {
     // }).catch(err => {
     //   console.log(err)
     // })
-    this.$store.commit('refreshUser')
+    this.$store.commit('refreshUser', this)
     if (this.$route.path === '/') {
       this.$router.push('/fight')
     }

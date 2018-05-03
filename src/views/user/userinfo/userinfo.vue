@@ -180,6 +180,7 @@ export default {
         cancelText: '取消',
         confirmText: '确定',
         format: 'YYYY-MM-DD',
+        startDate: '1970-01-01',
         value: _this.params.birthday,
         onConfirm (val) {
           console.log(val)
@@ -188,8 +189,10 @@ export default {
       })
     },
     onShadowChange (ids, names) {
-      console.log(ids, names)
       this.nowAddressName = names
+      this.params.province = names[0]
+      this.params.city = names[1]
+      this.params.county = names[2]
     },
     getName (value) {
       return value2name(value, ChinaAddressV4Data)
@@ -216,9 +219,34 @@ export default {
     selfSubmit () {
       this.$http.post('/users/changeSelf', qs.stringify(this.params)).then(response => {
         let res = response.data
-        console.log(res)
+        if (res.status === 10000) {
+          this.$store.commit('refreshUser', this)
+          this.$vux.toast.show({
+            width: '60%',
+            time: 1000,
+            type: 'success',
+            text: res.msg
+          })
+        } else {
+          this.$vux.toast.show({
+            width: '60%',
+            time: 1000,
+            type: 'warn',
+            text: res.msg
+          })
+        }
+        let _this = this
+        setTimeout(function () {
+          _this.$router.back()
+        }, 1000)
       }).catch(err => {
         console.log(err)
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '通讯错误，请重试'
+        })
       })
     }
   }

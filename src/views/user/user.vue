@@ -185,7 +185,7 @@ export default {
           _this.$router.push('/login')
         }, 1000)
       } else {
-        this.$router.push('/user/userinfo')
+        this.$router.push('/userinfo')
       }
     },
     toHistory () {

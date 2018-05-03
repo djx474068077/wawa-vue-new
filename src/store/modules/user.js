@@ -8,10 +8,32 @@ const user = {
         state.userinfo.status = status
       }
     },
-    refreshUser (state) {
-      console.log('refreshUser')
+    refreshUser (state, vm) {
+      // console.log('refreshUser')
       if (localStorage.userinfo) {
         state.userinfo = JSON.parse(localStorage.userinfo)
+        vm.$http.get('/users/self', {params: {username: state.userinfo.username}}).then(response => {
+          let res = response.data
+          if (res.status === 10000) {
+            state.userinfo = res.data
+            localStorage.setItem('userinfo', JSON.stringify(res.data))
+          }
+        }).catch(err => {
+          console.log(err)
+          vm.$vux.toast.show({
+            width: '60%',
+            time: 1000,
+            type: 'warn',
+            text: '通讯错误，请重试'
+          })
+        })
+      } else {
+        vm.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请重新登录'
+        })
       }
       // vm.$http.get('/api/admin/admin/self').then(
       //   res => {

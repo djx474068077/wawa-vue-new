@@ -30,7 +30,7 @@ const router = new Router({
     },
     {
       name: 'userinfo',
-      path: '/user/userinfo',
+      path: '/userinfo',
       component: () => import('@/views/user/userinfo/userinfo')
     },
     {
