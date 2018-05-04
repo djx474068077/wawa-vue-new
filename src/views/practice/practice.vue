@@ -1,7 +1,7 @@
 <style lang="stylus">
   .wa-parctice
     padding-top 30px
-    &>div
+    .wa-parctice-body
       padding:8px 20px
       /*border: 1px solid #red*/
       .wa-game-box
@@ -54,7 +54,7 @@
 
 <template>
   <div class="wa-parctice">
-    <div v-for="(item, index) in gameList" v-bind:key="index" class="">
+    <div class="wa-parctice-body" v-for="(item, index) in gameList" v-bind:key="index" @click="toParctice(item)">
       <div class="wa-game-box">
         <div class="wa-game-head">{{ item.name }}</div>
         <div class="wa-game-body">
@@ -72,20 +72,27 @@
         </div>
       </div>
     </div>
+    <VueGame ref="game" :game="gameChecked"></VueGame>
   </div>
 </template>
 
 <script>
+import VueGame from '@/components/Game/Game.vue'
 export default {
   name: 'practice',
+  components: {
+    VueGame
+  },
   data () {
     return {
+      gameChecked: {}, // 选择中的游戏
       gameList: [
         // {
         //   name: '颜色陷阱',
         //   link: ''
         // }
-      ]
+      ],
+      scoreList: []
     }
   },
   computed: {
@@ -96,12 +103,30 @@ export default {
   mounted () {
     this.getGameList()
   },
+  watch: {
+    scoreList: function (n, o) {
+      console.log(this.gameList)
+      if (this.gameList) {
+        for (var score of n) {
+          console.log(score)
+          console.log(this)
+          this.gameList.find(item => item.id === score.game_id).max_score = score.max_score
+        }
+      }
+    }
+  },
   methods: {
+    toParctice (game) {
+      this.gameChecked = game
+      this.$refs.game.show()
+    },
     getGameList () {
+      console.log(this)
       this.$http.get('/game/list', {params: {username: this.userinfo.username}}).then(response => {
         let res = response.data
         if (res.status === 10000) {
-          this.gameList = res.data
+          this.gameList = res.data.gameList
+          this.scoreList = res.data.scoreList
         } else {
           this.$vux.toast.show({
             width: '60%',
