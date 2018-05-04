@@ -119,6 +119,7 @@ export default {
     toParctice (game) {
       this.gameChecked = game
       this.$refs.game.show()
+      this.$refs.game.showModal()
     },
     getGameList () {
       console.log(this)

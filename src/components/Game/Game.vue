@@ -1,4 +1,9 @@
 <style lang="stylus">
+//stylus 运算
+  all_height(a,b)
+    a = unit(a,px)
+    b = unit(b,vh)
+    return b-a
   .wa-game
     width: 100%
     height: 100vh
@@ -95,7 +100,7 @@
           color: yellow
           z-index 20
     .wa-game-cont
-      height: 100vh
+      height: 88vh
       box-sizing border-box
       .wa-modal
         width: 100%
@@ -150,6 +155,18 @@
               text-align center
               font-size: 20px
               color: #CD6839
+            .wa-modal-img
+              width: 80%
+              height: 62%
+              margin: 20px auto 10px
+              img
+                max-height: 100%
+                max-width: 100%
+            .wa-modal-intro
+              line-height 34px
+              text-align center
+              font-size: 15px
+              color: #c9c9c9
 </style>
 
 <template>
@@ -196,21 +213,26 @@
           <div class="wa-modal-cont">
             <p class="wa-modal-name">{{ game.name }}</p>
             <div class="wa-modal-img">
-              <img src="" alt="">
+              <img src="../../assets/game/test.png" alt="">
             </div>
             <p class="wa-modal-intro">{{ game.role }}</p>
           </div>
-          <div class="wa-modal-back">BACK</div>
-          <div class="wa-modal-begin">开始</div>
+          <div class="wa-modal-back" @click="hideModal();hide()">BACK</div>
+          <div class="wa-modal-begin" @click="begin()">开始</div>
         </div>
       </div>
+      <VueYsxj ref="ysxj"></VueYsxj>
     </div>
   </div>
 </template>
 
 <script>
+import VueYsxj from '@/components/Game/ysxj.vue'
 export default {
   name: 'game',
+  components: {
+    VueYsxj
+  },
   props: [
     'game'
   ],
@@ -221,6 +243,16 @@ export default {
     }
   },
   methods: {
+    begin () {
+      switch (this.game.name) {
+        case '颜色陷阱':
+          this.$refs.ysxj.show()
+          break
+        default:
+          break
+      }
+      this.hideModal()
+    },
     showModal () {
       this.modalvisible = true
     },
