@@ -221,7 +221,7 @@
           <div class="wa-modal-begin" @click="begin()">开始</div>
         </div>
       </div>
-      <VueYsxj ref="ysxj"></VueYsxj>
+      <VueYsxj ref="ysxj" :allTime="3" :scoreStep="20"></VueYsxj>
     </div>
   </div>
 </template>
@@ -244,6 +244,9 @@ export default {
   },
   methods: {
     begin () {
+      this.$vux.loading.show({
+        text: '初始化游戏'
+      })
       switch (this.game.name) {
         case '颜色陷阱':
           this.$refs.ysxj.show()

@@ -105,12 +105,13 @@ export default {
   },
   watch: {
     scoreList: function (n, o) {
-      console.log(this.gameList)
+      // console.log(this.gameList)
       if (this.gameList) {
         for (var score of n) {
-          console.log(score)
-          console.log(this)
-          this.gameList.find(item => item.id === score.game_id).max_score = score.max_score
+          // console.log(score)
+          if (score.max_score) {
+            this.gameList.find(item => item.id === score.game_id).max_score = score.max_score
+          }
         }
       }
     }
