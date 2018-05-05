@@ -43,43 +43,71 @@ export default {
     // 初始化定制ysxj游戏数据
     setYsxjList () {
       // 这里写创建游戏数据的函数
-      this.ysxjList = [
-        [{
-          bgc: '#ffff00',
-          text: '黄'
-        }, {
-          bgc: '#ff0000',
-          text: '蓝'
-        }],
-        [{
-          bgc: '#ffff00',
-          text: '黄'
-        }, {
-          bgc: '#ff0000',
-          text: '蓝'
-        }, {
-          bgc: '#ff0000',
-          text: '蓝'
-        }]
-      ]
+      // 这个创建的数组是二维数组，
+      for (var i = 0; i <= 60; i++) {
+        let page = []
+        let flag = false
+        let size = i > 20 ? 6 : i > 12 ? 5 : i > 7 ? 4 : i > 2 ? 3 : 2
+        for (var j = 0; j < size; j++) {
+          if (j + 1 === size && flag === false) {
+            // 如果循环到最后一个，还没有找出不一样的背景和字，进行此步骤
+            let index = this.getDiffIndex()
+            page.push({bgc: this.backList[index[0]], text: this.textList[index[1]]})
+          } else if (flag === true) {
+            // 如果flag为true，表示已经找到了不一样的背景和字，进行此步骤
+            let k = parseInt(Math.random() * this.backList.length)
+            page.push({bgc: this.backList[k], text: this.textList[k]})
+          } else {
+            // 如果flag不为true，表示还没找到不一样的背景和字，进行此步骤，正常走
+            let k1 = parseInt(Math.random() * this.backList.length)
+            let k2 = parseInt(Math.random() * this.textList.length)
+            page.push({bgc: this.backList[k1], text: this.textList[k2]})
+            if (k1 !== k2) {
+              flag = true
+            }
+          }
+        }
+        this.shuffle(page)
+        this.ysxjList.push(page)
+      }
       let _this = this
       setTimeout(function () {
         _this.$vux.loading.hide()
         _this.visible = true
         _this.setYsxjListNow()
+        _this.$emit('startTime')
         _this.timeRun()
         _this.lastTimeOut = setTimeout(_this.timeOut, _this.allTime * 1000)
       }, 1000)
+    },
+    // 取两个随机索引值，并且这两个不能相同
+    getDiffIndex () {
+      let i1 = parseInt(Math.random() * this.backList.length)
+      let i2 = parseInt(Math.random() * this.textList.length)
+      if (i1 === i2) {
+        return this.getDiffIndex()
+      }
+      return [i1, i2]
+    },
+    // 随机数组顺序
+    shuffle (a) {
+      var len = a.length
+      for (var i = 0; i < len - 1; i++) {
+        var index = parseInt(Math.random() * (len - i))
+        var temp = a[index]
+        a[index] = a[len - i - 1]
+        a[len - i - 1] = temp
+      }
     },
     // 色块点击事件
     clickBox (item) {
       console.log('time: ' + this.hasTime + ';bgc: ' + item.bgc + ';text: ' + item.text)
       if (this.backList.findIndex(value => value === item.bgc) === this.textList.findIndex(value => value === item.text)) {
+        this.log_self.push({time: this.hasTime, is_right: false, score_add: 0})
+      } else {
         this.log_self.push({time: this.hasTime, is_right: true, score_add: parseInt(this.scoreStep)})
         this.page++
         this.setYsxjListNow()
-      } else {
-        this.log_self.push({time: this.hasTime, is_right: false, score_add: 0})
       }
     },
     // 计时器
@@ -121,6 +149,8 @@ export default {
       top: 50%
       transform translateY(-50%)
       display flex
+      justify-content center
+      flex-wrap wrap
       .wa-ysxj-box
         width: 90px
         height: 90px

@@ -199,7 +199,7 @@
             <img src="../../assets/avatar/avatar-boy1.png" alt="">
           </div>
         </div>
-        <div class="wa-game-clock"><p>20</p></div>
+        <div class="wa-game-clock"><p>{{ lastTime }}</p></div>
       </div>
       <!--<div class="wa-game-title">-->
         <!--<p>{{ game.name }}</p>-->
@@ -221,7 +221,7 @@
           <div class="wa-modal-begin" @click="begin()">开始</div>
         </div>
       </div>
-      <VueYsxj ref="ysxj" :allTime="3" :scoreStep="20"></VueYsxj>
+      <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @startTime="startTime"></VueYsxj>
     </div>
   </div>
 </template>
@@ -239,13 +239,20 @@ export default {
   data () {
     return {
       visible: false,
-      modalvisible: true
+      modalvisible: true,
+      allTime: 20,
+      scoreStep: 20,
+      // 剩余时间计时器
+      lastTimeOut: '',
+      // 已经用了的时间
+      hasTime: 0,
+      lastTime: 20
     }
   },
   methods: {
     begin () {
       this.$vux.loading.show({
-        text: '初始化游戏'
+        text: '初始化...'
       })
       switch (this.game.name) {
         case '颜色陷阱':
@@ -255,6 +262,13 @@ export default {
           break
       }
       this.hideModal()
+    },
+    startTime () {
+      let _this = this
+      this.lastTimeOut = setInterval(function () {
+        _this.hasTime += 10
+        _this.lastTime = parseInt((_this.allTime * 1000 - _this.hasTime) / 1000)
+      }, 10)
     },
     showModal () {
       this.modalvisible = true
