@@ -1,16 +1,23 @@
 <template>
   <div class="fight">
-    <p>fight</p>
     <!--<i class="fa fa-handshake-o" style="font-size: 30px;color: red;"></i>-->
+    <div style="height: 20%;"></div>
     <div class="ability" id="ability-box" ref="myEchart"></div>
-
+    <div class="wa-fight-box">
+      <button class="wa-fight-btn" @click="mate()">匹配对手</button>
+    </div>
+    <VueMate ref="mate"></VueMate>
   </div>
 </template>
 
 <script>
+import VueMate from '@/components/Game/mate.vue'
 import echarts from 'echarts'
 export default {
   name: 'fight',
+  components: {
+    VueMate
+  },
   data () {
     return {
       // 图表配置和数据
@@ -32,7 +39,7 @@ export default {
               color: '#ff0000'
             },
             radius: 100,
-            center: ['50%', '40%']
+            center: ['50%', '50%']
           }
         ],
         series: [
@@ -58,12 +65,15 @@ export default {
     })
   },
   methods: {
+    mate () {
+      this.$refs.mate.show()
+    },
     initChart () {
       let chart = echarts.init(document.getElementById('ability-box'))
       chart.setOption(this.abilityOption)
     },
     init () {
-      this.$http.get('/users').then(res => {
+      this.$http.get('/users/getSelfAbility').then(res => {
         console.log(res)
       }).catch(err => {
         console.log(err)
@@ -77,7 +87,21 @@ export default {
   .fight
     height: 100%
     .ability
+      position: relative
       margin: 0 auto
       width: 100%
-      height: 100%
+      height: 60%
+    .wa-fight-box
+      width: 100%
+      text-align center
+      height: 10%
+      .wa-fight-btn
+        padding: 6px 25px
+        background: #09bb07
+        color: #ffffff
+        font-size 18px
+        line-height 32px
+        border-radius 4px
+        border: none
+        outline none
 </style>

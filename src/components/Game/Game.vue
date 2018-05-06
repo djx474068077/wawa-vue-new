@@ -158,6 +158,7 @@
             .wa-modal-img
               width: 80%
               height: 62%
+              text-align center
               margin: 20px auto 10px
               img
                 max-height: 100%
@@ -167,6 +168,14 @@
               text-align center
               font-size: 15px
               color: #c9c9c9
+      .time-out-box
+        width: 90%
+        position: relative
+        left: 5%
+        top: 50%
+        transform translateY(-50%)
+        img
+          width: 100%
 </style>
 
 <template>
@@ -183,7 +192,7 @@
               <span class="wa-game-user-sex sex-boy"></span>
               <span class="wa-game-user-age">20</span>
             </p>
-            <p class="wa-game-user-score">400</p>
+            <p class="wa-game-user-score">{{ selfScore }}</p>
           </div>
         </div>
         <div class="wa-game-user wa-player2">
@@ -213,7 +222,7 @@
           <div class="wa-modal-cont">
             <p class="wa-modal-name">{{ game.name }}</p>
             <div class="wa-modal-img">
-              <img src="../../assets/game/test.png" alt="">
+              <img :src="'/static/game/' + game.intro_img" alt="">
             </div>
             <p class="wa-modal-intro">{{ game.role }}</p>
           </div>
@@ -221,12 +230,18 @@
           <div class="wa-modal-begin" @click="begin()">开始</div>
         </div>
       </div>
-      <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @startTime="startTime"></VueYsxj>
+      <transition name="slide-fade">
+        <div class="time-out-box" v-if="visibleTimeOut">
+          <img src="../../assets/game/time-out.png" alt="">
+        </div>
+      </transition>
+      <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @boxClick="boxClick" @startTime="startTime" @endTime="endTime"></VueYsxj>
     </div>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
 import VueYsxj from '@/components/Game/ysxj.vue'
 export default {
   name: 'game',
@@ -239,8 +254,10 @@ export default {
   data () {
     return {
       visible: false,
+      visibleTimeOut: false,
       modalvisible: true,
-      allTime: 20,
+      allTime: 10,
+      selfScore: 0,
       scoreStep: 20,
       // 剩余时间计时器
       lastTimeOut: '',
@@ -249,7 +266,17 @@ export default {
       lastTime: 20
     }
   },
+  mounted () {
+    this.lastTime = this.allTime
+  },
   methods: {
+    boxClick (value) {
+      if (value.is_right) {
+        this.selfScore += value.score_add
+      } else {
+
+      }
+    },
     begin () {
       this.$vux.loading.show({
         text: '初始化...'
@@ -269,6 +296,21 @@ export default {
         _this.hasTime += 10
         _this.lastTime = parseInt((_this.allTime * 1000 - _this.hasTime) / 1000)
       }, 10)
+    },
+    endTime (log) {
+      clearTimeout(this.lastTimeOut)
+      this.$http.post('/game/upSelfLogs', qs.stringify({username: '', logs: log})).then(response => {
+        let res = response.data
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      this.$refs.ysxj.hide()
+      this.visibleTimeOut = true
+      // this.$vux.loading.show({
+      //   text: '结算中...'
+      // })
+      console.log(log)
     },
     showModal () {
       this.modalvisible = true

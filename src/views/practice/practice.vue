@@ -27,7 +27,8 @@
             height: 100%
             text-align: center
             img
-              height: 100%
+              max-height: 100%
+              max-width: 100%
           .wa-game-scorebox
             height: 100%
             width: 49%
@@ -59,7 +60,8 @@
         <div class="wa-game-head">{{ item.name }}</div>
         <div class="wa-game-body">
           <div class="wa-game-img">
-            <img src="../../assets/avatar/avatar.jpg" alt="">
+            <img :src=" '/static/game/' + item.min_img " alt="">
+            <!--<img src="@/assets/game/min-ysxj.jpg" alt="">-->
           </div>
           <div class="wa-game-scorebox">
             <p class="wa-game-scoretext">最高分</p>
@@ -86,12 +88,7 @@ export default {
   data () {
     return {
       gameChecked: {}, // 选择中的游戏
-      gameList: [
-        // {
-        //   name: '颜色陷阱',
-        //   link: ''
-        // }
-      ],
+      gameList: [],
       scoreList: []
     }
   },

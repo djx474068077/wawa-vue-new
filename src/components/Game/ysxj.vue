@@ -104,10 +104,12 @@ export default {
       console.log('time: ' + this.hasTime + ';bgc: ' + item.bgc + ';text: ' + item.text)
       if (this.backList.findIndex(value => value === item.bgc) === this.textList.findIndex(value => value === item.text)) {
         this.log_self.push({time: this.hasTime, is_right: false, score_add: 0})
+        this.$emit('boxClick', {time: this.hasTime, is_right: false, score_add: 0})
       } else {
         this.log_self.push({time: this.hasTime, is_right: true, score_add: parseInt(this.scoreStep)})
         this.page++
         this.setYsxjListNow()
+        this.$emit('boxClick', {time: this.hasTime, is_right: true, score_add: parseInt(this.scoreStep)})
       }
     },
     // 计时器
@@ -123,6 +125,7 @@ export default {
       console.log('时间到')
       clearTimeout(this.lastTimeOut)
       clearTimeout(this.hasTimeInterval)
+      this.$emit('endTime', this.log_self)
     },
     // 设置当前ysxj游戏显示数据
     setYsxjListNow () {
