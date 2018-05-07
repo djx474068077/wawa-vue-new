@@ -15,6 +15,7 @@ export default {
     VueHeader, VueFooter
   },
   created () {
+    this.$store.commit('refreshUser', this)
   },
   mounted () {
     // this.$http.get('/oauth/wx_login').then(res => {
@@ -22,7 +23,6 @@ export default {
     // }).catch(err => {
     //   console.log(err)
     // })
-    this.$store.commit('refreshUser', this)
     if (this.$route.path === '/') {
       this.$router.push('/fight')
     }

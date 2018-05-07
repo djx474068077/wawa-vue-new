@@ -187,22 +187,22 @@
             <img src="../../assets/avatar/avatar-boy1.png" alt="">
           </div>
           <div class="wa-game-user-msg">
-            <p class="wa-game-user-nick">这里是昵称,如果字很多呢 怎么办？</p>
+            <p class="wa-game-user-nick">{{ home.user_f.nickname }}</p>
             <p class="wa-game-user-mid">
-              <span class="wa-game-user-sex sex-boy"></span>
-              <span class="wa-game-user-age">20</span>
+              <span :class="['wa-game-user-sex', home.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+              <span class="wa-game-user-age">{{ home.user_f.age }}</span>
             </p>
             <p class="wa-game-user-score">{{ selfScore }}</p>
           </div>
         </div>
         <div class="wa-game-user wa-player2">
           <div class="wa-game-user-msg">
-            <p class="wa-game-user-nick">这里是昵称</p>
+            <p class="wa-game-user-nick">{{ home.user_s.nickname }}</p>
             <p class="wa-game-user-mid">
-              <span class="wa-game-user-sex sex-girl"></span>
-              <span class="wa-game-user-age">20</span>
+              <span :class="['wa-game-user-sex', home.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+              <span class="wa-game-user-age">{{ home.user_s.age }}</span>
             </p>
-            <p class="wa-game-user-score">400</p>
+            <p class="wa-game-user-score">{{ home.user_s.score }}</p>
           </div>
           <div class="wa-game-user-img">
             <img src="../../assets/avatar/avatar-boy1.png" alt="">
@@ -226,7 +226,7 @@
             </div>
             <p class="wa-modal-intro">{{ game.role }}</p>
           </div>
-          <div class="wa-modal-back" @click="hideModal();hide()">BACK</div>
+          <div class="wa-modal-back" @click="back()">BACK</div>
           <div class="wa-modal-begin" @click="begin()">开始</div>
         </div>
       </div>
@@ -242,6 +242,7 @@
 
 <script>
 import qs from 'qs'
+import moment from 'moment'
 import VueYsxj from '@/components/Game/ysxj.vue'
 export default {
   name: 'game',
@@ -256,6 +257,8 @@ export default {
       visible: false,
       visibleTimeOut: false,
       modalvisible: true,
+      isPractice: true, // 是否是训练
+      home: '', // 房间信息
       allTime: 10,
       selfScore: 0,
       scoreStep: 20,
@@ -266,20 +269,39 @@ export default {
       lastTime: 20
     }
   },
+  computed: {
+    userinfo: function () {
+      return this.$store.state.user.userinfo
+    }
+  },
   mounted () {
     this.lastTime = this.allTime
+  },
+  watch: {
+    home: function (n, o) {
+      if (n.user_f.birthday) {
+        n.user_f.age = moment(n.user_f.birthday).fromNow().substr(0, 3)
+      } else {
+        n.user_f.age = '保密'
+      }
+      if (n.user_s.birthday) {
+        n.user_s.age = moment(n.user_s.birthday).fromNow().substr(0, 3)
+      } else {
+        n.user_s.age = '保密'
+      }
+    }
   },
   methods: {
     boxClick (value) {
       if (value.is_right) {
         this.selfScore += value.score_add
       } else {
-
+        // 出现点击错误的动画效果
       }
     },
     begin () {
       this.$vux.loading.show({
-        text: '初始化...'
+        text: '加载中...'
       })
       switch (this.game.name) {
         case '颜色陷阱':
@@ -299,18 +321,41 @@ export default {
     },
     endTime (log) {
       clearTimeout(this.lastTimeOut)
-      this.$http.post('/game/upSelfLogs', qs.stringify({username: '', logs: log})).then(response => {
+      this.$http.post('/game/practice/upSelfLogs', qs.stringify({
+        game_id: this.game._id,
+        home_id: this.home._id,
+        username: this.userinfo.username,
+        log: log,
+        score: this.selfScore
+      })).then(response => {
         let res = response.data
         console.log(res)
       }).catch(err => {
         console.log(err)
       })
-      this.$refs.ysxj.hide()
       this.visibleTimeOut = true
       // this.$vux.loading.show({
       //   text: '结算中...'
       // })
       console.log(log)
+    },
+    back () {
+      this.$http.get('/game/deleteHome', {params: {home_id: this.home._id}}).then(response => {
+        let res = response.data
+        if (res.status === 10000) {
+          this.hideModal()
+          this.hide()
+        } else {
+          this.$vux.toast({
+            type: 'warn',
+            time: 1000,
+            width: '60%',
+            text: res.msg
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     showModal () {
       this.modalvisible = true
@@ -318,7 +363,13 @@ export default {
     hideModal () {
       this.modalvisible = false
     },
-    show () {
+    show (key, home) {
+      if (key === 'p') {
+        this.isPractice = true
+      } else {
+        this.isPractice = false
+      }
+      this.home = home
       this.visible = true
     },
     hide () {

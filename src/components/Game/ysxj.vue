@@ -103,9 +103,11 @@ export default {
     clickBox (item) {
       console.log('time: ' + this.hasTime + ';bgc: ' + item.bgc + ';text: ' + item.text)
       if (this.backList.findIndex(value => value === item.bgc) === this.textList.findIndex(value => value === item.text)) {
+        // 点击一样的色块，错误
         this.log_self.push({time: this.hasTime, is_right: false, score_add: 0})
         this.$emit('boxClick', {time: this.hasTime, is_right: false, score_add: 0})
       } else {
+        // 点击不一样的色块，正确
         this.log_self.push({time: this.hasTime, is_right: true, score_add: parseInt(this.scoreStep)})
         this.page++
         this.setYsxjListNow()
@@ -125,6 +127,7 @@ export default {
       console.log('时间到')
       clearTimeout(this.lastTimeOut)
       clearTimeout(this.hasTimeInterval)
+      this.hide()
       this.$emit('endTime', this.log_self)
     },
     // 设置当前ysxj游戏显示数据

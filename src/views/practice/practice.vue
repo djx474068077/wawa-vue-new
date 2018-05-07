@@ -107,7 +107,7 @@ export default {
         for (var score of n) {
           // console.log(score)
           if (score.max_score) {
-            this.gameList.find(item => item.id === score.game_id).max_score = score.max_score
+            this.gameList.find(item => item._id === score.game_id).max_score = score.max_score
           }
         }
       }
@@ -116,8 +116,15 @@ export default {
   methods: {
     toParctice (game) {
       this.gameChecked = game
-      this.$refs.game.show()
-      this.$refs.game.showModal()
+      // let home = {}
+      this.$http.get('/game/practice/mate', {params: {username: this.userinfo.username, game_id: game._id}}).then(response => {
+        let res = response.data
+        console.log(res)
+        if (res.status === 10000) {
+          this.$refs.game.show('p', res.data)
+          this.$refs.game.showModal()
+        }
+      })
     },
     getGameList () {
       console.log(this)
