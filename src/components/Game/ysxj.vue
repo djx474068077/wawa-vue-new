@@ -77,6 +77,7 @@ export default {
         _this.setYsxjListNow()
         _this.$emit('startTime')
         _this.timeRun()
+        clearTimeout(_this.lastTimeOut)
         _this.lastTimeOut = setTimeout(_this.timeOut, _this.allTime * 1000)
       }, 1000)
     },
@@ -117,6 +118,7 @@ export default {
     // 计时器
     timeRun () {
       let _this = this
+      clearInterval(this.hasTimeInterval)
       this.hasTimeInterval = setInterval(function () {
         _this.hasTime += 10
         _this.lastTime = (_this.allTime * 1000 - _this.hasTime) / 1000
@@ -134,7 +136,21 @@ export default {
     setYsxjListNow () {
       this.ysxjListNow = this.ysxjList[this.page]
     },
+    init () {
+      this.visible = false
+      this.lastTime = this.allTime
+      this.lastTimeOut = ''
+      this.hasTime = 0
+      this.hasTimeInterval = ''
+      this.page = 0
+      this.log_self = []
+      this.backList = ['#000000', '#ffff00', '#ff0000', '#ADFF2F', '#87CEFF', '#BF3EFF']
+      this.textList = ['黑', '黄', '红', '绿', '蓝', '紫']
+      this.ysxjList = []
+      this.ysxjListNow = []
+    },
     show () {
+      this.init()
       this.setYsxjList()
     },
     hide () {

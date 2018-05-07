@@ -74,7 +74,7 @@
         </div>
       </div>
     </div>
-    <VueGame ref="game" :game="gameChecked"></VueGame>
+    <VueGame ref="game" :game="gameChecked" @again="toParctice"></VueGame>
   </div>
 </template>
 

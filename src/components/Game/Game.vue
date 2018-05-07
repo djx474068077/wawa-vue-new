@@ -132,7 +132,7 @@
             border-radius 14px
             line-height 55px
             text-align center
-            font-size: 22px
+            font-size: 18px
             color: #ffffff
           .wa-modal-begin
             display inline-block
@@ -176,6 +176,55 @@
         transform translateY(-50%)
         img
           width: 100%
+      .wa-banlbox-p
+        height: 70%
+        position: relative
+        z-index: 20
+        top: 10%
+        text-align center
+        .banl-p-floor
+          /*height: 120px*/
+          padding: 10px 0
+          .banl-p-title
+            font-size: 18px
+            line-height 36px
+          .banl-p-score
+            color: #ff0000
+            font-size: 28px
+            line-height 50px
+          .banl-p-bili
+            color: #000000
+            font-size: 24px
+            line-height: 38px
+          .banl-p-flex>p
+            width: 32.3%
+            display inline-block
+          .banl-p-shuzi
+            font-size: 20px
+            line-height 34px
+          .banl-p-back
+            padding: 8px 20px
+            margin-right: 14px
+            border-radius 10px
+            background: #FF6347
+            border: none
+            outline none
+            border-radius 8px
+            line-height 40px
+            text-align center
+            font-size: 18px
+            color: #ffffff
+          .banl-p-again
+            padding: 8px 50px
+            border-radius 10px
+            background: #54FF9F
+            border: none
+            outline none
+            border-radius 8px
+            line-height 40px
+            text-align center
+            font-size: 22px
+            color: #ffffff
 </style>
 
 <template>
@@ -184,7 +233,7 @@
       <div class="wa-game-users">
         <div class="wa-game-user wa-player1">
           <div class="wa-game-user-img">
-            <img src="../../assets/avatar/avatar-boy1.png" alt="">
+            <img src="../../assets/avatar/avatar-boy1.png" style="border-color: #09bb07;" alt="">
           </div>
           <div class="wa-game-user-msg">
             <p class="wa-game-user-nick">{{ home.user_f.nickname }}</p>
@@ -205,7 +254,7 @@
             <p class="wa-game-user-score">{{ home.user_s.score }}</p>
           </div>
           <div class="wa-game-user-img">
-            <img src="../../assets/avatar/avatar-boy1.png" alt="">
+            <img src="../../assets/avatar/avatar-boy1.png" style="border-color: #ff0000;" alt="">
           </div>
         </div>
         <div class="wa-game-clock"><p>{{ lastTime }}</p></div>
@@ -235,6 +284,33 @@
           <img src="../../assets/game/time-out.png" alt="">
         </div>
       </transition>
+      <div class="wa-banlbox-p" v-if="banlanceBoxP">
+        <div class="banl-p-floor">
+          <p class="banl-p-title">本次得分</p>
+          <p class="banl-p-score">{{ banlance.user_f.score }}</p>
+        </div>
+        <div class="banl-p-floor">
+          <p class="banl-p-title">正确率</p>
+          <p class="banl-p-bili">{{ banlance.user_f.accuracy }} %</p>
+        </div>
+        <div class="banl-p-floor">
+          <div class="banl-p-flex">
+            <p class="banl-p-title">正确答案</p>
+            <p class="banl-p-title">错误答案</p>
+            <p class="banl-p-title">平均时间</p>
+          </div>
+          <div class="banl-p-flex">
+            <p class="banl-p-shuzi" style="color: #09bb07;">{{ banlance.user_f.trueNum }}</p>
+            <p class="banl-p-shuzi" style="color: #ff0000;">{{ banlance.user_f.falseNum }}</p>
+            <p class="banl-p-shuzi" style="color: #ffbe00;">{{ banlance.user_f.averageTime }} s</p>
+          </div>
+        </div>
+        <div class="banl-p-floor">
+          <button class="banl-p-back" @click="overback">back</button>
+          <button class="banl-p-again" @click="again">再来一次</button>
+        </div>
+      </div>
+      <div class="wa-banlbox-m" v-if="banlanceBoxM"></div>
       <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @boxClick="boxClick" @startTime="startTime" @endTime="endTime"></VueYsxj>
     </div>
   </div>
@@ -254,7 +330,10 @@ export default {
   ],
   data () {
     return {
-      visible: false,
+      visible: false, // 游戏主体是否显示
+      banlanceBoxP: false, // 训练结算模态框是否显示
+      banlanceBoxM: false, // 对战模态框是否显示
+      banlance: '', // 结算数据
       visibleTimeOut: false,
       modalvisible: true,
       isPractice: true, // 是否是训练
@@ -266,7 +345,7 @@ export default {
       lastTimeOut: '',
       // 已经用了的时间
       hasTime: 0,
-      lastTime: 20
+      lastTime: 0
     }
   },
   computed: {
@@ -288,6 +367,40 @@ export default {
         n.user_s.age = moment(n.user_s.birthday).fromNow().substr(0, 3)
       } else {
         n.user_s.age = '保密'
+      }
+    },
+    banlance: function (n, o) {
+      if (n.user_f && n.user_f.log) {
+        let trueNum = 0
+        let falseNum = 0
+        for (let item of n.user_f.log) {
+          if (item.is_right) {
+            trueNum++
+          } else {
+            falseNum++
+          }
+        }
+        let accuracy = trueNum / n.user_f.log.length
+        n.user_f.averageTime = (this.allTime / n.user_f.log.length).toString().substr(0, 3)
+        n.user_f.accuracy = (accuracy * 100).toString().substr(0, 3)
+        n.user_f.trueNum = trueNum
+        n.user_f.falseNum = falseNum
+      }
+      if (n.user_s && n.user_s.log) {
+        let trueNum = 0
+        let falseNum = 0
+        for (let item of n.user_s.log) {
+          if (item.is_right) {
+            trueNum++
+          } else {
+            falseNum++
+          }
+        }
+        let accuracy = trueNum / n.user_s.log.length
+        n.user_s.averageTime = (this.allTime / n.user_s.log.length).toString().substr(0, 3)
+        n.user_s.accuracy = (accuracy * 100).toString().substr(0, 3)
+        n.user_s.trueNum = trueNum
+        n.user_s.falseNum = falseNum
       }
     }
   },
@@ -314,6 +427,7 @@ export default {
     },
     startTime () {
       let _this = this
+      clearInterval(this.lastTimeOut)
       this.lastTimeOut = setInterval(function () {
         _this.hasTime += 10
         _this.lastTime = parseInt((_this.allTime * 1000 - _this.hasTime) / 1000)
@@ -321,24 +435,141 @@ export default {
     },
     endTime (log) {
       clearTimeout(this.lastTimeOut)
-      this.$http.post('/game/practice/upSelfLogs', qs.stringify({
-        game_id: this.game._id,
-        home_id: this.home._id,
-        username: this.userinfo.username,
-        log: log,
-        score: this.selfScore
-      })).then(response => {
-        let res = response.data
-        console.log(res)
-      }).catch(err => {
-        console.log(err)
-      })
       this.visibleTimeOut = true
+      if (this.isPractice) {
+        // 训练模式，提交数据
+        this.$http.post('/game/practice/upSelfLogs', qs.stringify({
+          game_id: this.game._id,
+          home_id: this.home._id,
+          username: this.userinfo.username,
+          log: log,
+          score: this.selfScore
+        })).then(response => {
+          let res = response.data
+          if (res.status === 10000) {
+            this.$http.get('/game/gameData', {params: {home_id: this.home._id}}).then(response => {
+              let res = response.data
+              if (res.status === 10000) {
+                this.banlance = res.data
+                this.$vux.loading.show({
+                  time: 1200,
+                  width: '60%',
+                  text: '结算中。。。'
+                })
+                let _this = this
+                setTimeout(function () {
+                  _this.$vux.loading.hide()
+                  _this.banlanceBoxP = true
+                  _this.visibleTimeOut = false
+                }, 1200)
+              } else {
+                this.$vux.toast.show({
+                  type: 'warn',
+                  time: 1000,
+                  width: '60%',
+                  text: res.msg
+                })
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+          } else {
+            this.$vux.toast.show({
+              type: 'warn',
+              time: 1000,
+              width: '60%',
+              text: res.msg
+            })
+            let _this = this
+            setTimeout(function () {
+              _this.router.push('/practice')
+            }, 1000)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.$vux.toast.show({
+            type: 'warn',
+            time: 1000,
+            width: '60%',
+            text: '通讯错误'
+          })
+        })
+      } else {
+        // 对战模式，提交数据
+        this.$http.post('/game/mate/upSelfLogs', qs.stringify({
+          game_id: this.game._id,
+          home_id: this.home._id,
+          username: this.userinfo.username,
+          log: log,
+          score: this.selfScore
+        })).then(response => {
+          let res = response.data
+          if (res.status === 10000) {
+            this.$vux.loading.show({
+              width: '60%',
+              text: '等待对手中。。。'
+            })
+            this.$vux.loading.show({
+              width: '60%',
+              text: '结算中。。。'
+            })
+            let _this = this
+            setTimeout(function () {
+              _this.$vux.loading.hide()
+              _this.$http.get('/game/gameData', {params: {home_id: _this.home._id}}).then(response => {
+                let res = response.data
+                console.log(res)
+              }).catch(err => {
+                console.log(err)
+              })
+            }, 2000)
+          } else {
+            this.$vux.toast.show({
+              type: 'warn',
+              time: 1000,
+              width: '60%',
+              text: res.msg
+            })
+            let _this = this
+            setTimeout(function () {
+              _this.router.push('/practice')
+            }, 1000)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+
       // this.$vux.loading.show({
       //   text: '结算中...'
       // })
       console.log(log)
     },
+    overback () {
+      this.hide()
+      this.banlanceBoxP = false
+      this.banlanceBoxM = false
+    },
+    again () {
+      this.$emit('again', this.game)
+    },
+    init () {
+      this.visible = false
+      this.banlanceBoxP = false
+      this.banlanceBoxM = false
+      this.banlance = ''
+      this.visibleTimeOut = false
+      this.modalvisible = true
+      this.isPractice = true
+      this.home = ''
+      this.allTime = 10
+      this.selfScore = 0
+      this.scoreStep = 20
+      this.lastTimeOut = ''
+      this.hasTime = 0
+      this.lastTime = 0
+    },
+    // 查看规则时 返回
     back () {
       this.$http.get('/game/deleteHome', {params: {home_id: this.home._id}}).then(response => {
         let res = response.data
@@ -346,7 +577,7 @@ export default {
           this.hideModal()
           this.hide()
         } else {
-          this.$vux.toast({
+          this.$vux.toast.show({
             type: 'warn',
             time: 1000,
             width: '60%',
@@ -364,6 +595,7 @@ export default {
       this.modalvisible = false
     },
     show (key, home) {
+      this.init()
       if (key === 'p') {
         this.isPractice = true
       } else {
