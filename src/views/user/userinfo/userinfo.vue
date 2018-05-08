@@ -255,6 +255,7 @@ export default {
 
 <style lang="stylus">
   .wa-userinfo
+    padding-bottom: 40px
     .user-box>div
       height: 15px
     & ul
@@ -280,6 +281,7 @@ export default {
           display: flex
           align-items center
           margin: -13px -15px
+          margin-top: -13px !important
           font-size: 15px
           padding: inherit
           color: inherit

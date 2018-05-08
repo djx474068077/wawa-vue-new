@@ -236,22 +236,28 @@
             <img src="../../assets/avatar/avatar-boy1.png" style="border-color: #09bb07;" alt="">
           </div>
           <div class="wa-game-user-msg">
-            <p class="wa-game-user-nick">{{ home.user_f.nickname }}</p>
+            <p class="wa-game-user-nick" v-if="home.user_f.nickname">{{ home.user_f.nickname }}</p>
+            <p class="wa-game-user-nick" v-else>{{ home.user_f.username }}</p>
             <p class="wa-game-user-mid">
-              <span :class="['wa-game-user-sex', home.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+              <span v-if="home.user_f.sex" :class="['wa-game-user-sex', home.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
               <span class="wa-game-user-age">{{ home.user_f.age }}</span>
             </p>
-            <p class="wa-game-user-score">{{ selfScore }}</p>
+            <p class="wa-game-user-score" v-if="isPractice">{{ selfScore }}</p>
+            <p class="wa-game-user-score" v-else-if="!isPractice && home.user_f.username === userinfo.username">{{ selfScore }}</p>
+            <p class="wa-game-user-score" v-else>0</p>
           </div>
         </div>
         <div class="wa-game-user wa-player2">
           <div class="wa-game-user-msg">
-            <p class="wa-game-user-nick">{{ home.user_s.nickname }}</p>
+            <p class="wa-game-user-nick" v-if="home.user_s.nickname">{{ home.user_s.nickname }}</p>
+            <p class="wa-game-user-nick" v-else>{{ home.user_s.username }}</p>
             <p class="wa-game-user-mid">
-              <span :class="['wa-game-user-sex', home.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+              <span v-if="home.user_s.sex" :class="['wa-game-user-sex', home.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
               <span class="wa-game-user-age">{{ home.user_s.age }}</span>
             </p>
-            <p class="wa-game-user-score">{{ home.user_s.score }}</p>
+            <p class="wa-game-user-score" v-if="isPractice && home.user_s.score">{{ home.user_s.score }}</p>
+            <p class="wa-game-user-score" v-else-if="!isPractice && home.user_s.username === userinfo.username">{{ selfScore }}</p>
+            <p class="wa-game-user-score" v-else>0</p>
           </div>
           <div class="wa-game-user-img">
             <img src="../../assets/avatar/avatar-boy1.png" style="border-color: #ff0000;" alt="">
@@ -275,8 +281,8 @@
             </div>
             <p class="wa-modal-intro">{{ game.role }}</p>
           </div>
-          <div class="wa-modal-back" @click="back()">BACK</div>
-          <div class="wa-modal-begin" @click="begin()">开始</div>
+          <div class="wa-modal-back" @click="back()" v-if="isPractice">BACK</div>
+          <div class="wa-modal-begin" @click="begin()" v-if="isPractice">开始</div>
         </div>
       </div>
       <transition name="slide-fade">
@@ -454,7 +460,7 @@ export default {
                 this.$vux.loading.show({
                   time: 1200,
                   width: '60%',
-                  text: '结算中。。。'
+                  text: '结算中...'
                 })
                 let _this = this
                 setTimeout(function () {
@@ -498,7 +504,7 @@ export default {
         // 对战模式，提交数据
         this.$http.post('/game/mate/upSelfLogs', qs.stringify({
           game_id: this.game._id,
-          home_id: this.home._id,
+          home: this.home,
           username: this.userinfo.username,
           log: log,
           score: this.selfScore
@@ -549,6 +555,7 @@ export default {
       this.hide()
       this.banlanceBoxP = false
       this.banlanceBoxM = false
+      this.$emit('back')
     },
     again () {
       this.$emit('again', this.game)
@@ -567,7 +574,7 @@ export default {
       this.scoreStep = 20
       this.lastTimeOut = ''
       this.hasTime = 0
-      this.lastTime = 0
+      this.lastTime = this.allTime
     },
     // 查看规则时 返回
     back () {
@@ -576,6 +583,7 @@ export default {
         if (res.status === 10000) {
           this.hideModal()
           this.hide()
+          this.$emit('back')
         } else {
           this.$vux.toast.show({
             type: 'warn',
@@ -596,12 +604,18 @@ export default {
     },
     show (key, home) {
       this.init()
+      this.home = home
       if (key === 'p') {
         this.isPractice = true
       } else {
         this.isPractice = false
+        let daojishi = ''
+        let _this = this
+        clearTimeout(daojishi)
+        daojishi = setTimeout(function () {
+          _this.begin()
+        }, 3000)
       }
-      this.home = home
       this.visible = true
     },
     hide () {

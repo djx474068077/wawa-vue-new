@@ -25,6 +25,7 @@
           display: flex
           align-items center
           margin: -13px -15px
+          margin-top: -13px !important
           padding: inherit
           color: inherit
           overflow: hidden
@@ -142,11 +143,12 @@
 </template>
 
 <script>
+import { MessageBox } from 'mint-ui'
 import { Cell, Group } from 'vux'
 export default {
   name: 'user',
   components: {
-    Cell, Group
+    Cell, Group, MessageBox
   },
   data () {
     return {
@@ -264,7 +266,9 @@ export default {
           _this.$router.push('/login')
         }, 1000)
       } else {
-        this.$store.commit('logout', this)
+        MessageBox.confirm('确定退出登录？？').then(action => {
+          this.$store.commit('logout', this)
+        })
       }
     }
   }

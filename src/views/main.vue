@@ -15,7 +15,10 @@ export default {
     VueHeader, VueFooter
   },
   created () {
-    this.$store.commit('refreshUser', this)
+    let _this = this
+    setTimeout(function () {
+      _this.$store.commit('refreshUser', _this)
+    }, 200)
   },
   mounted () {
     // this.$http.get('/oauth/wx_login').then(res => {
@@ -23,9 +26,12 @@ export default {
     // }).catch(err => {
     //   console.log(err)
     // })
-    if (this.$route.path === '/') {
-      this.$router.push('/fight')
-    }
+    let _this = this
+    setTimeout(function () {
+      if (_this.$route.path === '/') {
+        _this.$router.push('/fight')
+      }
+    }, 200)
   }
 }
 </script>

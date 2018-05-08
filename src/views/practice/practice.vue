@@ -74,7 +74,7 @@
         </div>
       </div>
     </div>
-    <VueGame ref="game" :game="gameChecked" @again="toParctice"></VueGame>
+    <VueGame ref="game" :game="gameChecked" @again="toParctice" @back="back"></VueGame>
   </div>
 </template>
 
@@ -98,7 +98,10 @@ export default {
     }
   },
   mounted () {
-    this.getGameList()
+    let _this = this
+    setTimeout(function () {
+      _this.getGameList()
+    }, 200)
   },
   watch: {
     scoreList: function (n, o) {
@@ -114,17 +117,32 @@ export default {
     }
   },
   methods: {
+    back () {
+    },
     toParctice (game) {
-      this.gameChecked = game
-      // let home = {}
-      this.$http.get('/game/practice/mate', {params: {username: this.userinfo.username, game_id: game._id}}).then(response => {
-        let res = response.data
-        console.log(res)
-        if (res.status === 10000) {
-          this.$refs.game.show('p', res.data)
-          this.$refs.game.showModal()
-        }
-      })
+      if (this.userinfo) {
+        this.gameChecked = game
+        // let home = {}
+        this.$http.get('/game/practice/mate', {params: {username: this.userinfo.username, game_id: game._id}}).then(response => {
+          let res = response.data
+          console.log(res)
+          if (res.status === 10000) {
+            this.$refs.game.show('p', res.data)
+            this.$refs.game.showModal()
+          }
+        })
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      }
     },
     getGameList () {
       console.log(this)
