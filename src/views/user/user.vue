@@ -108,14 +108,14 @@
             </div>
           </a>
         </li>
-        <li>
-          <a href="javascript:;" @click="toAbility">
-            <i class="fa fa-bookmark" style=""></i>
-            <div>
-              我的能力
-            </div>
-          </a>
-        </li>
+        <!--<li>-->
+          <!--<a href="javascript:;" @click="toAbility">-->
+            <!--<i class="fa fa-bookmark" style=""></i>-->
+            <!--<div>-->
+              <!--我的能力-->
+            <!--</div>-->
+          <!--</a>-->
+        <!--</li>-->
         <li>
           <a href="javascript:;" @click="toRanking">
             <i class="fa fa-bar-chart" style=""></i>
@@ -203,12 +203,13 @@ export default {
           _this.$router.push('/login')
         }, 1000)
       } else {
-        this.$vux.toast.show({
-          width: '60%',
-          time: 1000,
-          type: 'warn',
-          text: '功能待开发'
-        })
+        this.$router.push('/gamelog')
+        // this.$vux.toast.show({
+        //   width: '60%',
+        //   time: 1000,
+        //   type: 'warn',
+        //   text: '功能待开发'
+        // })
       }
     },
     toAbility () {

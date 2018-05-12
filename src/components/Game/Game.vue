@@ -225,6 +225,137 @@
             text-align center
             font-size: 22px
             color: #ffffff
+      .wa-banlbox-m
+        height: 70%
+        position: relative
+        z-index: 20
+        top: 10%
+        /*text-align center*/
+        .banl-m-floor
+          padding: 6px
+          box-sizing border-box
+          .banl-m-f-box
+            left: 5%
+          .banl-m-s-box
+            right: 5%
+            float: right
+          .banl-m-user-box
+            position: relative
+            width: 30%
+            display: inline-block
+            padding: 6px
+            text-align center
+            .banl-m-avatar-box
+              width: 70%
+              height: 70%
+              img
+                width: 100%
+                border-radius 50%
+                border: 2px solid #ffffff
+            .banl-m-user-msg
+              display: inline-block
+              box-sizing border-box
+              p
+                line-height 20px
+              .banl-m-user-nick
+                width: 6em
+                font-weight 600
+                font-size: 14px
+                line-height 20px
+                overflow hidden
+                text-overflow ellipsis
+                white-space nowrap
+              .banl-m-user-mid
+                height: 22px
+                padding: 0px 0px 4px
+                .banl-m-user-sex
+                  display: inline-block
+                  width: 18px
+                  height: 18px
+                  background: no-repeat 0 0
+                  background-size: cover
+                  transform translateY(3px)
+                .sex-boy
+                  background-image url("../../assets/game/sex-boy.png")
+                .sex-girl
+                  background-image url("../../assets/game/sex-girl.png")
+                .banl-m-user-age
+                  display: inline-block
+                  /*width: 30px*/
+                  height: 18px
+                  padding: 0 6px
+                  border-radius 3px
+                  color: #ffffff
+                  background: #09bb07
+          .banl-m-f-item
+            margin-left: 5%
+            text-align center
+            width: 25%
+            display inline-block
+            height: 30px
+            line-height 30px
+            color: #09bb07
+            font-size: 18px
+          .banl-m-s-item
+            width: 25%
+            text-align center
+            display inline-block
+            height: 30px
+            line-height 30px
+            color: #f74c31
+            font-size: 18px
+          .banl-m-compare-box
+            width: 40%
+            display inline-block
+            height: 30px
+            text-align center
+            p
+              width: 100%
+              height: 15px
+              line-height 15px
+              font-size: 13px
+            .banl-m-compare-bg
+              position: relative
+              width: 100%
+              height: 15px
+              background: #f74c31
+              .banl-m-compare
+                position: absolute
+                height: 100%
+                top: 0
+                left: 0
+                background: #09bb07
+        .banl-m-back-box
+          text-align center
+          .banl-m-back
+            padding: 4px 30px
+            margin: 10px
+            border-radius 10px
+            background: #FF6347
+            border: none
+            outline none
+            border-radius 8px
+            line-height 40px
+            text-align center
+            font-size: 18px
+            color: #ffffff
+        .banl-m-allscore
+          .banl-m-f-item
+            height: 48px
+            line-height 48px
+            font-size: 24px
+          .banl-m-s-item
+            height: 48px
+            line-height 48px
+            font-size 24px
+          .banl-m-compare-box
+            height: 48px
+            p
+              height: 20px
+              line-height: 20px
+              font-size 17px
+            .banl-m-compare-bg
+              height: 22px
 </style>
 
 <template>
@@ -316,7 +447,88 @@
           <button class="banl-p-again" @click="again">再来一次</button>
         </div>
       </div>
-      <div class="wa-banlbox-m" v-if="banlanceBoxM"></div>
+      <div class="wa-banlbox-m" v-if="banlanceBoxM">
+        <div class="banl-m-floor">
+          <div class="banl-m-user-box banl-m-f-box">
+            <div class="ban1-m-avatar-box">
+              <img src="../../assets/avatar/avatar-boy1.png" alt="">
+            </div>
+            <div class="banl-m-user-msg">
+              <p class="banl-m-user-nick" v-if="home.user_f.nickname">{{ home.user_f.nickname }}</p>
+              <p class="banl-m-user-nick" v-else>{{ home.user_f.username }}</p>
+              <p class="banl-m-user-mid">
+                <span v-if="home.user_f.sex" :class="['banl-m-user-sex', home.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+                <span class="banl-m-user-age">{{ home.user_f.age }}</span>
+              </p>
+            </div>
+          </div>
+          <p style="display: inline-block;font-size: 20px;font-weight: 600;margin: 10px auto;text-align: center;width: 38%;">{{ home.game_name }}</p>
+          <div class="banl-m-user-box banl-m-s-box">
+            <div class="ban1-m-avatar-box">
+              <img src="../../assets/avatar/avatar-boy1.png" alt="">
+            </div>
+            <div class="banl-m-user-msg">
+              <p class="banl-m-user-nick" v-if="home.user_s.nickname">{{ home.user_s.nickname }}</p>
+              <p class="banl-m-user-nick" v-else>{{ home.user_s.username }}</p>
+              <p class="banl-m-user-mid">
+                <span v-if="home.user_s.sex" :class="['banl-m-user-sex', home.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+                <span class="banl-m-user-age">{{ home.user_s.age }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="banl-m-floor">
+          <div class="banl-m-f-item" v-if="banlance.user_f.trueNum">{{ banlance.user_f.trueNum }}</div>
+          <div class="banl-m-f-item" v-else>0</div>
+          <div class="banl-m-compare-box">
+            <p>正确数</p>
+            <div class="banl-m-compare-bg">
+              <div class="banl-m-compare" :style="{width: banlance.trueNumW}"></div>
+            </div>
+          </div>
+          <div class="banl-m-s-item" v-if="banlance.user_s.trueNum">{{ banlance.user_s.trueNum }}</div>
+          <div class="banl-m-s-item" v-else>0</div>
+        </div>
+        <div class="banl-m-floor">
+          <div class="banl-m-f-item" v-if="banlance.user_f.averageTime">{{ banlance.user_f.averageTime}}s</div>
+          <div class="banl-m-f-item" v-else>0s</div>
+          <div class="banl-m-compare-box">
+            <p>平均用时</p>
+            <div class="banl-m-compare-bg">
+              <div class="banl-m-compare" :style="{width: banlance.averageTimeW}"></div>
+            </div>
+          </div>
+          <div class="banl-m-s-item" v-if="banlance.user_s.averageTime">{{ banlance.user_s.averageTime}}s</div>
+          <div class="banl-m-s-item" v-else>0s</div>
+        </div>
+        <div class="banl-m-floor">
+          <div class="banl-m-f-item" v-if="banlance.user_f.accuracy">{{ banlance.user_f.accuracy }}%</div>
+          <div class="banl-m-f-item" v-else>0</div>
+          <div class="banl-m-compare-box">
+            <p>正确率</p>
+            <div class="banl-m-compare-bg">
+              <div class="banl-m-compare" :style="{width: banlance.accuracyW}"></div>
+            </div>
+          </div>
+          <div class="banl-m-s-item" v-if="banlance.user_s.accuracy">{{ banlance.user_s.accuracy }}%</div>
+          <div class="banl-m-s-item" v-else>0%</div>
+        </div>
+        <div class="banl-m-floor banl-m-allscore">
+          <div class="banl-m-f-item" v-if="banlance.user_f.score">{{ banlance.user_f.score }}</div>
+          <div class="banl-m-f-item" v-else>0</div>
+          <div class="banl-m-compare-box">
+            <p>总分</p>
+            <div class="banl-m-compare-bg">
+              <div class="banl-m-compare" :style="{width: banlance.scoreW}"></div>
+            </div>
+          </div>
+          <div class="banl-m-s-item" v-if="banlance.user_s.score">{{ banlance.user_s.score }}</div>
+          <div class="banl-m-s-item" v-else>0</div>
+        </div>
+        <div class="banl-m-floor banl-m-back-box">
+          <button class="banl-m-back" @click="overback">返回</button>
+        </div>
+      </div>
       <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @boxClick="boxClick" @startTime="startTime" @endTime="endTime"></VueYsxj>
     </div>
   </div>
@@ -386,7 +598,8 @@ export default {
             falseNum++
           }
         }
-        let accuracy = trueNum / n.user_f.log.length
+        let accuracy = 0
+        accuracy = trueNum / n.user_f.log.length
         n.user_f.averageTime = (this.allTime / n.user_f.log.length).toString().substr(0, 3)
         n.user_f.accuracy = (accuracy * 100).toString().substr(0, 3)
         n.user_f.trueNum = trueNum
@@ -402,11 +615,29 @@ export default {
             falseNum++
           }
         }
-        let accuracy = trueNum / n.user_s.log.length
+        let accuracy = 0
+        accuracy = trueNum / n.user_s.log.length
         n.user_s.averageTime = (this.allTime / n.user_s.log.length).toString().substr(0, 3)
         n.user_s.accuracy = (accuracy * 100).toString().substr(0, 3)
         n.user_s.trueNum = trueNum
         n.user_s.falseNum = falseNum
+      }
+      if (!this.isPractice) {
+        if (n.user_f.accuracy && n.user_s.accuracy) {
+          n.accuracyW = (parseInt(n.user_f.accuracy) / (parseInt(n.user_f.accuracy) + parseInt(n.user_s.accuracy)) * 100) + '%'
+        }
+        if (n.user_f.trueNum && n.user_s.trueNum) {
+          n.trueNumW = (n.user_f.trueNum / (n.user_f.trueNum + n.user_s.trueNum) * 100) + '%'
+        }
+        if (n.user_f.falseNum && n.user_s.falseNum) {
+          n.falseNumW = (n.user_f.falseNum / (n.user_f.falseNum + n.user_s.falseNum) * 100) + '%'
+        }
+        if (n.user_f.averageTime && n.user_s.averageTime) {
+          n.averageTimeW = (parseInt(n.user_f.averageTime) / (parseInt(n.user_f.averageTime) + parseInt(n.user_s.averageTime)) * 100) + '%'
+        }
+        if (n.user_f.score && n.user_s.score) {
+          n.scoreW = (parseInt(n.user_f.score) / (parseInt(n.user_f.score) + parseInt(n.user_s.score)) * 100) + '%'
+        }
       }
     }
   },
@@ -513,10 +744,6 @@ export default {
           if (res.status === 10000) {
             this.$vux.loading.show({
               width: '60%',
-              text: '等待对手中。。。'
-            })
-            this.$vux.loading.show({
-              width: '60%',
               text: '结算中。。。'
             })
             let _this = this
@@ -524,11 +751,16 @@ export default {
               _this.$vux.loading.hide()
               _this.$http.get('/game/gameData', {params: {home_id: _this.home._id}}).then(response => {
                 let res = response.data
+                if (res.status === 10000) {
+                  _this.banlance = res.data
+                  _this.banlanceBoxM = true
+                  _this.visibleTimeOut = false
+                }
                 console.log(res)
               }).catch(err => {
                 console.log(err)
               })
-            }, 2000)
+            }, 3000)
           } else {
             this.$vux.toast.show({
               type: 'warn',

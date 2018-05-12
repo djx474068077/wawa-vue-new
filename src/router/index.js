@@ -25,6 +25,11 @@ const router = new Router({
           name: 'user',
           path: 'user',
           component: () => import('@/views/user/user')
+        },
+        {
+          name: 'gamelog',
+          path: 'gamelog',
+          component: () => import('@/views/user/gamelog/gamelog')
         }
       ]
     },

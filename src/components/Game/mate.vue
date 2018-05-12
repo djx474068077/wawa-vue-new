@@ -126,18 +126,18 @@ export default {
       //
       this.visible = true
       this.sendSelfMate()
-      // let _this = this
-      // clearTimeout(this.mateTimeOut)
-      // this.mateTimeOut = setTimeout(function () {
-      //   clearInterval(_this.askInterval)
-      //   _this.nomate()
-      //   _this.$vux.toast.show({
-      //     type: 'warn',
-      //     time: 1000,
-      //     width: '80%',
-      //     text: '你已经找不到对手了，请等会再寻找'
-      //   })
-      // }, 20000)
+      let _this = this
+      clearTimeout(this.mateTimeOut)
+      this.mateTimeOut = setTimeout(function () {
+        clearInterval(_this.askInterval)
+        _this.nomate()
+        _this.$vux.toast.show({
+          type: 'warn',
+          time: 1000,
+          width: '80%',
+          text: '你已经找不到对手了，请等会再寻找'
+        })
+      }, 20000)
     },
     hide () {
       this.visible = false

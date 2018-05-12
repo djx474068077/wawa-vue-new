@@ -18,6 +18,11 @@ export default {
   components: {
     VueMate
   },
+  computed: {
+    userinfo: function () {
+      return this.$store.state.user.userinfo
+    }
+  },
   data () {
     return {
       // 图表配置和数据
@@ -66,7 +71,20 @@ export default {
   },
   methods: {
     mate () {
-      this.$refs.mate.show()
+      if (this.userinfo) {
+        this.$refs.mate.show()
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          time: 1000,
+          type: 'warn',
+          text: '请先登陆'
+        })
+        let _this = this
+        setTimeout(function () {
+          _this.$router.push('/login')
+        }, 1000)
+      }
     },
     initChart () {
       let chart = echarts.init(document.getElementById('ability-box'))
