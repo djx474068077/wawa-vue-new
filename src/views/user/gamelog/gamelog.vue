@@ -1,8 +1,11 @@
 <style lang="stylus">
   .wa-gamelog
-    padding-top 30px
+    padding-top 10px
+    padding-bottom 120px
+    height: 100vh
+    background: rgb(243, 243, 243)
     &>p
-      padding:0 20px
+      padding:8px 20px
       font-size: 20px
       font-weight 600
       text-align center
@@ -89,65 +92,81 @@
 <template>
   <div class="wa-gamelog">
     <p>历史对战记录</p>
-    <div class="wa-gamelog-floor" v-for="(item, index) in mateData" v-bind:key="index">
-      <div class="wa-gamelog-box">
-        <div class="wa-gamelog-head">
-          <div>{{ item.game_name }}</div>
-        </div>
-        <div class="wa-gamelog-body">
-          <div class="gamelog-user-box">
-            <div class="gamelog-avatar-box">
-              <img src="../../../assets/avatar/avatar-boy1.png" alt="">
+    <ul v-infinite-scroll="loadMore"
+        infinite-scroll-disabled="loadingMore"
+        infinite-scroll-distance="4"
+        style="overflow: scroll;height: 84vh;padding-bottom: 30px">
+      <li class="wa-gamelog-floor" v-for="(item, index) in mateData" v-bind:key="index">
+        <div class="wa-gamelog-box">
+          <div class="wa-gamelog-head">
+            <div>{{ item.game_name }}</div>
+          </div>
+          <div class="wa-gamelog-body">
+            <div class="gamelog-user-box">
+              <div class="gamelog-avatar-box">
+                <img src="../../../assets/avatar/avatar-boy1.png" alt="">
+              </div>
+              <div class="gamelog-user-msg">
+                <p class="gamelog-user-nick" v-if="item.user_f.nickname">{{ item.user_f.nickname }}</p>
+                <p class="gamelog-user-nick" v-else>{{ item.user_f.username }}</p>
+                <p class="gamelog-user-mid">
+                  <span v-if="item.user_f.sex" :class="['gamelog-user-sex', item.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+                  <span class="gamelog-user-age">{{ item.user_f.birthday | birthdayToAge }}</span>
+                </p>
+              </div>
+              <div class="gamelog-score">
+                总得分
+                <span style="font-size: 30px;color: #ff0000;" v-if="item.user_f.score">{{ item.user_f.score }}</span>
+                <span style="font-size: 30px;color: #ff0000;" v-else>0</span>
+              </div>
             </div>
-            <div class="gamelog-user-msg">
-              <p class="gamelog-user-nick" v-if="item.user_f.nickname">{{ item.user_f.nickname }}</p>
-              <p class="gamelog-user-nick" v-else>{{ item.user_f.username }}</p>
-              <p class="gamelog-user-mid">
-                <span v-if="item.user_f.sex" :class="['gamelog-user-sex', item.user_f.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
-                <span class="gamelog-user-age">{{ item.user_f.birthday | birthdayToAge }}</span>
-              </p>
-            </div>
-            <div class="gamelog-score">
-              总得分
-              <span style="font-size: 30px;color: #ff0000;" v-if="item.user_f.score">{{ item.user_f.score }}</span>
-              <span style="font-size: 30px;color: #ff0000;" v-else>0</span>
+            <div class="gamelog-user-box">
+              <div class="gamelog-avatar-box">
+                <img src="../../../assets/avatar/avatar-boy1.png" alt="">
+              </div>
+              <div class="gamelog-user-msg">
+                <p class="gamelog-user-nick" v-if="item.user_s.nickname">{{ item.user_s.nickname }}</p>
+                <p class="gamelog-user-nick" v-else>{{ item.user_s.username }}</p>
+                <p class="gamelog-user-mid">
+                  <span v-if="item.user_s.sex" :class="['gamelog-user-sex', item.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
+                  <span class="gamelog-user-age">{{ item.user_s.birthday | birthdayToAge }}</span>
+                </p>
+              </div>
+              <div class="gamelog-score">
+                总得分
+                <span style="font-size: 30px;color: #ff0000;" v-if="item.user_s.score">{{ item.user_s.score }}</span>
+                <span style="font-size: 30px;color: #ff0000;" v-else>0</span>
+              </div>
             </div>
           </div>
-          <div class="gamelog-user-box">
-            <div class="gamelog-avatar-box">
-              <img src="../../../assets/avatar/avatar-boy1.png" alt="">
-            </div>
-            <div class="gamelog-user-msg">
-              <p class="gamelog-user-nick" v-if="item.user_s.nickname">{{ item.user_s.nickname }}</p>
-              <p class="gamelog-user-nick" v-else>{{ item.user_s.username }}</p>
-              <p class="gamelog-user-mid">
-                <span v-if="item.user_s.sex" :class="['gamelog-user-sex', item.user_s.sex === '男' ? 'sex-boy' : 'sex-girl']"></span>
-                <span class="gamelog-user-age">{{ item.user_s.birthday | birthdayToAge }}</span>
-              </p>
-            </div>
-            <div class="gamelog-score">
-              总得分
-              <span style="font-size: 30px;color: #ff0000;" v-if="item.user_s.score">{{ item.user_s.score }}</span>
-              <span style="font-size: 30px;color: #ff0000;" v-else>0</span>
-            </div>
+          <div class="wa-gamelog-foot">
+            时间： {{ item.meta.createAt | timefilter }}
           </div>
         </div>
-        <div class="wa-gamelog-foot">
-          {{ item.meta.createAt | timefilter }}
-        </div>
+      </li>
+      <div style="margin: 5px auto;width: 100%;text-align: center">
+        <mt-spinner type="fading-circle" v-if="loadingMore && hasMore" color="#26a2ff" style="display: inline-block"></mt-spinner>
+        <divider v-if="hasMore === false">没有更多了</divider>
       </div>
-    </div>
+    </ul>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+import { Divider } from 'vux'
 export default {
   name: 'gamelog',
+  components: {
+    Divider
+  },
   data () {
     return {
-      mateData: '',
-      pracData: ''
+      loadingMore: false,
+      hasMore: true,
+      mateDataAll: [],
+      mateData: [],
+      pracData: []
     }
   },
   computed: {
@@ -161,7 +180,7 @@ export default {
   filters: {
     timefilter: function (value) {
       if (!value) return ''
-      return value.toString().replace('T', ' ').substr(0, 18)
+      return value.toString().replace('T', ' ').substr(0, 19)
     },
     birthdayToAge: function (value) {
       if (!value) return '保密'
@@ -174,10 +193,33 @@ export default {
         let res = response.data
         console.log(res)
         if (res.status === 10000) {
-          this.mateData = res.data.mateLogs
+          this.mateDataAll = res.data.mateLogs
           this.pracData = res.data.pracLogs
         }
       })
+    },
+    // 加载更多
+    loadMore () {
+      console.log('loading....')
+      this.hasMore = true
+      if (this.mateDataAll.length === this.mateData.length) {
+        this.hasMore = false
+      }
+      this.loadingMore = true
+      let _this = this
+      setTimeout(() => {
+        // let last = _this.list[this.list.length - 1]
+        let mateLength = _this.mateData.length
+        let step = _this.mateDataAll.length - mateLength
+        if (step >= 4) {
+          step = 4
+        }
+        console.log(step)
+        for (let i = 0; i < step; i++) {
+          _this.mateData.push(_this.mateDataAll[mateLength + i])
+        }
+        _this.loadingMore = false
+      }, 2500)
     }
   }
 }

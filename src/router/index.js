@@ -30,6 +30,11 @@ const router = new Router({
           name: 'gamelog',
           path: 'gamelog',
           component: () => import('@/views/user/gamelog/gamelog')
+        },
+        {
+          name: 'ranking',
+          path: 'ranking',
+          component: () => import('@/views/user/ranking/ranking')
         }
       ]
     },

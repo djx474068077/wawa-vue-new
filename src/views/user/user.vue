@@ -246,12 +246,7 @@ export default {
           _this.$router.push('/login')
         }, 1000)
       } else {
-        this.$vux.toast.show({
-          width: '60%',
-          time: 1000,
-          type: 'warn',
-          text: '功能待开发'
-        })
+        this.$router.push('/ranking')
       }
     },
     logout () {
