@@ -104,7 +104,7 @@
           <a href="javascript:;" @click="toHistory">
             <i class="fa fa-history" style=""></i>
             <div>
-              我的历史战绩
+              历史对战记录
             </div>
           </a>
         </li>

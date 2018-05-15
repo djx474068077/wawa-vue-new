@@ -12,6 +12,7 @@ import 'iview/dist/styles/iview.css'
 import MintUi from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import moment from 'moment'
+import VueTouch from 'vue-touch'
 import {LoadingPlugin, ToastPlugin, WechatPlugin, DatetimePlugin, ConfirmPlugin} from 'vux'
 import './assets/font-awesome-4.7.0/css/font-awesome.min.css'
 
@@ -20,6 +21,7 @@ Vue.use(VueAxios, Axios)
 Axios.defaults.baseURL = apiConfig.baseUrl
 Vue.use(MintUi)
 Vue.use(iView)
+Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(moment)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)

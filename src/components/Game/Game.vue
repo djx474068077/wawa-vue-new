@@ -530,6 +530,7 @@
         </div>
       </div>
       <VueYsxj ref="ysxj" :allTime="this.allTime" :scoreStep="scoreStep" @boxClick="boxClick" @startTime="startTime" @endTime="endTime"></VueYsxj>
+      <VueKdkx ref="kdkx" :allTime="this.allTime" :scoreStep="scoreStep" @boxClick="boxClick" @startTime="startTime" @endTime="endTime"></VueKdkx>
     </div>
   </div>
 </template>
@@ -538,10 +539,11 @@
 import qs from 'qs'
 import moment from 'moment'
 import VueYsxj from '@/components/Game/ysxj.vue'
+import VueKdkx from '@/components/Game/kdkx.vue'
 export default {
   name: 'game',
   components: {
-    VueYsxj
+    VueYsxj, VueKdkx
   },
   props: [
     'game'
@@ -601,7 +603,7 @@ export default {
         let accuracy = 0
         accuracy = trueNum / n.user_f.log.length
         n.user_f.averageTime = (this.allTime / n.user_f.log.length).toString().substr(0, 3)
-        n.user_f.accuracy = (accuracy * 100).toString().substr(0, 3)
+        n.user_f.accuracy = (accuracy * 100).toString().substr(0, 4)
         n.user_f.trueNum = trueNum
         n.user_f.falseNum = falseNum
       }
@@ -618,7 +620,7 @@ export default {
         let accuracy = 0
         accuracy = trueNum / n.user_s.log.length
         n.user_s.averageTime = (this.allTime / n.user_s.log.length).toString().substr(0, 3)
-        n.user_s.accuracy = (accuracy * 100).toString().substr(0, 3)
+        n.user_s.accuracy = (accuracy * 100).toString().substr(0, 4)
         n.user_s.trueNum = trueNum
         n.user_s.falseNum = falseNum
       }
@@ -642,6 +644,7 @@ export default {
     }
   },
   methods: {
+    // 游戏组件答对一小点，加分
     boxClick (value) {
       if (value.is_right) {
         this.selfScore += value.score_add
@@ -656,6 +659,9 @@ export default {
       switch (this.game.name) {
         case '颜色陷阱':
           this.$refs.ysxj.show()
+          break
+        case '开大开小':
+          this.$refs.kdkx.show()
           break
         default:
           break
@@ -675,6 +681,8 @@ export default {
       this.visibleTimeOut = true
       if (this.isPractice) {
         // 训练模式，提交数据
+        console.log(log)
+        // console.log(typeof(log))
         this.$http.post('/game/practice/upSelfLogs', qs.stringify({
           game_id: this.game._id,
           home_id: this.home._id,
@@ -801,9 +809,9 @@ export default {
       this.modalvisible = true
       this.isPractice = true
       this.home = ''
-      this.allTime = 10
+      this.allTime = this.game.time_all
       this.selfScore = 0
-      this.scoreStep = 20
+      this.scoreStep = this.game.score_step
       this.lastTimeOut = ''
       this.hasTime = 0
       this.lastTime = this.allTime
