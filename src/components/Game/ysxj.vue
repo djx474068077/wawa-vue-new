@@ -19,6 +19,8 @@ export default {
       visible: false,
       // 剩余时间
       lastTime: this.allTime,
+      // 初始化计时器
+      initTimeOut: '',
       // 剩余时间计时器
       lastTimeOut: '',
       // 用时
@@ -71,7 +73,8 @@ export default {
         this.ysxjList.push(page)
       }
       let _this = this
-      setTimeout(function () {
+      clearTimeout(_this.initTimeOut)
+      _this.initTimeOut = setTimeout(function () {
         _this.$vux.loading.hide()
         _this.visible = true
         _this.setYsxjListNow()
