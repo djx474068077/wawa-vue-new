@@ -11,7 +11,7 @@
             </div>
             <!--<img :src="params.avatar" alt="">-->
             <img v-if="params.avatar" class="previewer-demo-img" :src="params.avatar" @click="$refs.previewer.show(index)">
-            <img v-else src="../../../assets/avatar/avatar.jpg" alt="">
+            <img v-else src="../../../../static/avatar/avatar.jpg" alt="">
             <!--<div v-transfer-dom>-->
               <!--<previewer :list="avatarList" ref="previewer" :options="options"></previewer>-->
             <!--</div>-->

@@ -14,7 +14,6 @@ import 'mint-ui/lib/style.css'
 import moment from 'moment'
 import VueTouch from 'vue-touch'
 import {LoadingPlugin, ToastPlugin, WechatPlugin, DatetimePlugin, ConfirmPlugin} from 'vux'
-import './assets/font-awesome-4.7.0/css/font-awesome.min.css'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, Axios)

@@ -72,7 +72,7 @@
         <li>
           <a href="javascript:;" @click="toUserinfo">
             <img v-if="userinfo.avatar" :src="userinfo.avatar" alt="">
-            <img v-else src="../../assets/avatar/avatar.jpg" alt="">
+            <img v-else src="../../../static/avatar/avatar.jpg" alt="">
             <div>
               <div v-if="userinfo && userinfo.nickname" style="font-size: 17px;">{{ userinfo.nickname }}</div>
               <div v-else-if="!userinfo" style="font-size: 17px;">未登陆</div>
@@ -88,7 +88,7 @@
       <ul>
         <li>
           <a href="javascript:;" @click="toUserinfo">
-            <i class="fa fa-gear" style=""></i>
+            <!--<i class="fa fa-gear" style=""></i>-->
             <div>
               修改用户信息
             </div>
@@ -102,7 +102,7 @@
       <ul>
         <li>
           <a href="javascript:;" @click="toHistory">
-            <i class="fa fa-history" style=""></i>
+            <!--<i class="fa fa-history" style=""></i>-->
             <div>
               历史对战记录
             </div>
@@ -118,7 +118,7 @@
         <!--</li>-->
         <li>
           <a href="javascript:;" @click="toRanking">
-            <i class="fa fa-bar-chart" style=""></i>
+            <!--<i class="fa fa-bar-chart" style=""></i>-->
             <div>
               我的排名
             </div>
@@ -131,7 +131,7 @@
       <ul>
         <li>
           <a href="javascript:;" @click="logout">
-            <i class="fa fa-sign-out" style=""></i>
+            <!--<i class="fa fa-sign-out" style=""></i>-->
             <div>
               退出登陆
             </div>
