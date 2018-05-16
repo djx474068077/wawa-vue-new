@@ -599,9 +599,9 @@ export default {
           }
         }
         let accuracy = 0
-        accuracy = trueNum / n.user_f.log.length
-        n.user_f.averageTime = (this.allTime / n.user_f.log.length).toString().substr(0, 3)
-        n.user_f.accuracy = (accuracy * 100).toString().substr(0, 3)
+        accuracy = n.user_f.log.length ? (trueNum / n.user_f.log.length) : 0
+        n.user_f.averageTime = (n.user_f.log.length ? (this.allTime / n.user_f.log.length) : 0).toString().substr(0, 3)
+        n.user_f.accuracy = (accuracy * 100).toString().substr(0, 4)
         n.user_f.trueNum = trueNum
         n.user_f.falseNum = falseNum
       }
@@ -616,9 +616,9 @@ export default {
           }
         }
         let accuracy = 0
-        accuracy = trueNum / n.user_s.log.length
-        n.user_s.averageTime = (this.allTime / n.user_s.log.length).toString().substr(0, 3)
-        n.user_s.accuracy = (accuracy * 100).toString().substr(0, 3)
+        accuracy = n.user_s.log.length ? (trueNum / n.user_s.log.length) : 0
+        n.user_s.averageTime = (n.user_s.log.length ? (this.allTime / n.user_s.log.length) : 0).toString().substr(0, 3)
+        n.user_s.accuracy = (accuracy * 100).toString().substr(0, 4)
         n.user_s.trueNum = trueNum
         n.user_s.falseNum = falseNum
       }
@@ -675,11 +675,12 @@ export default {
       this.visibleTimeOut = true
       if (this.isPractice) {
         // 训练模式，提交数据
+        console.log(log)
         this.$http.post('/game/practice/upSelfLogs', qs.stringify({
           game_id: this.game._id,
           home_id: this.home._id,
           username: this.userinfo.username,
-          log: log,
+          log: JSON.stringify(log),
           score: this.selfScore
         })).then(response => {
           let res = response.data
@@ -737,7 +738,7 @@ export default {
           game_id: this.game._id,
           home: this.home,
           username: this.userinfo.username,
-          log: log,
+          log: JSON.stringify(log),
           score: this.selfScore
         })).then(response => {
           let res = response.data

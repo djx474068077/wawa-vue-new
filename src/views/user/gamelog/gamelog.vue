@@ -219,7 +219,7 @@ export default {
           _this.mateData.push(_this.mateDataAll[mateLength + i])
         }
         _this.loadingMore = false
-      }, 2500)
+      }, 1500)
     }
   }
 }

@@ -60,13 +60,15 @@ export default {
             ]
           }
         ]
-      }
+      },
+      mateDataAll: [],
+      pracDataAll: []
     }
   },
   mounted () {
     this.$nextTick(() => {
       this.initChart()
-      // this.init()
+      this.init()
     })
   },
   methods: {
@@ -91,10 +93,13 @@ export default {
       chart.setOption(this.abilityOption)
     },
     init () {
-      this.$http.get('/users/getSelfAbility').then(res => {
+      this.$http.get('/game/selfLogs', {params: {username: this.userinfo.username}}).then(response => {
+        let res = response.data
         console.log(res)
-      }).catch(err => {
-        console.log(err)
+        if (res.status === 10000) {
+          this.mateDataAll = res.data.mateLogs
+          this.pracDataAll = res.data.pracLogs
+        }
       })
     }
   }
