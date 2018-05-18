@@ -144,6 +144,9 @@ export default {
           width: 23.9%
           margin: 0
           text-align center
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
           border-right: 1px solid #ffffff
           display inline-block
           &:last-child

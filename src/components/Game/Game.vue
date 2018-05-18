@@ -802,7 +802,7 @@ export default {
       this.modalvisible = true
       this.isPractice = true
       this.home = ''
-      this.allTime = 10
+      this.allTime = this.game.time_all
       this.selfScore = 0
       this.scoreStep = 20
       this.lastTimeOut = ''

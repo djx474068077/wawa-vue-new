@@ -68,8 +68,11 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.initChart()
-      this.init()
     })
+    let _this = this
+    setTimeout(function () {
+      _this.init()
+    }, 300)
   },
   methods: {
     mate () {

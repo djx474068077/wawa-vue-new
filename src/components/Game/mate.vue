@@ -58,8 +58,8 @@ export default {
         if (res.status === 10000) {
           this.gameChecked = res.data.game
           this.home = res.data.home
-          this.$refs.game.show('m', res.data.home)
           clearTimeout(this.mateTimeOut)
+          this.$refs.game.show('m', res.data.home)
           // 找到对手，返回了本次游戏的数据，准备开始
         } else if (res.status === 10001) {
           this.gameChecked = res.data.game
