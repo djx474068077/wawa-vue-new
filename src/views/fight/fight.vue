@@ -21,6 +21,64 @@ export default {
   computed: {
     userinfo: function () {
       return this.$store.state.user.userinfo
+    },
+    LogsList: function () {
+      let logList = []
+      if (this.mateDataAll) {
+        for (let log of this.mateDataAll) {
+          if (log.user_f.username === this.userinfo.username) {
+            logList.push(log.user_f.log)
+          } else if (log.user_s.username === this.userinfo.username) {
+            logList.push(log.user_s.log)
+          } else {
+            console.log('数据有点问题')
+          }
+        }
+      }
+      if (this.pracDataAll) {
+        for (let log of this.pracDataAll) {
+          logList.push(log.user_f.log)
+        }
+      }
+      if (this.mateDataAll || this.pracDataAll) {
+        return logList
+      } else {
+        return []
+      }
+    },
+    selfAbility: function () {
+      let speed = 20
+      let accuracy = 20
+      if (this.LogsList) {
+        let length = 0
+        let trueNum = 0
+        let time = 0
+        for (let log of this.LogsList) {
+          length += log.length
+          for (let logitem of log) {
+            if (logitem.is_right === true) {
+              trueNum++
+            }
+          }
+        }
+        time = length * 30
+        speed = length / time * 1000
+        if (speed > 90) {
+          speed = Math.random() * 15 + 90
+        }
+        accuracy = trueNum / length * 100
+        console.log('length' + length)
+        console.log('trueNum' + trueNum)
+        console.log('time' + time)
+      }
+      return [speed, Math.random() * 50, Math.random() * 50, accuracy, Math.random() * 50, Math.random() * 50]
+    }
+  },
+  watch: {
+    selfAbility: function (n, o) {
+      console.log(n)
+      this.abilityOption.series[0].data[0].value = n
+      this.initChart()
     }
   },
   data () {
@@ -55,7 +113,7 @@ export default {
             data: [
               {
                 name: 'user',
-                value: [80, 60, 70, 40, 46, 76]
+                value: [90, 90, 90, 90, 90, 90]
               }
             ]
           }
@@ -63,16 +121,18 @@ export default {
       },
       mateDataAll: [],
       pracDataAll: []
+      // mateLogsList: [],
+      // pracLogsList: []
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.initChart()
-    })
     let _this = this
     setTimeout(function () {
       _this.init()
     }, 300)
+    this.$nextTick(() => {
+      this.initChart()
+    })
   },
   methods: {
     mate () {
