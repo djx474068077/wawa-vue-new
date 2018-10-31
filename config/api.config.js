@@ -1,4 +1,4 @@
-// 判断是开发模式还是本地模式，其实不需要这么麻烦 直接
+// 判断是开发模式还是本地模式
 const isPro = Object.is(process.env.NODE_ENV, 'production')
 
 module.exports = {
