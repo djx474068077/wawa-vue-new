@@ -49,11 +49,13 @@ export default {
     selfAbility: function () {
       let speed = 20
       let accuracy = 20
-      if (this.LogsList) {
+      if (this.LogsList && this.LogsList.length > 0) {
         let length = 0
         let trueNum = 0
         let time = 0
+        console.log(this.LogsList)
         for (let log of this.LogsList) {
+          console.log(log)
           length += log.length
           for (let logitem of log) {
             if (logitem.is_right === true) {
